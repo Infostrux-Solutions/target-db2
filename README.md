@@ -41,7 +41,7 @@ pipx install git+https://github.com/haleemur-infostrux/target-db2.git@main
     pip_url: git+https://github.com/haleemur-infostrux/target-db2.git@main
 ```
 
-_complete the meltano installation with appropriate configuration settings described in [Settings](#settings) section below.
+_complete the meltano installation with appropriate configuration settings described in [Settings](#settings) section below._
 
 ## Configuration
 
@@ -104,17 +104,25 @@ This Singer target will automatically import any environment variables within th
 `.env` if the `--config=ENV` is provided, such that config values will be considered if a matching
 environment variable is set either in the terminal context or in the `.env` file.
 
-### Source Authentication and Authorization
+### DB2 Authentication and Authorization
 
 <!--
 Developer TODO: If your target requires special access on the destination system, or any special authentication requirements, provide those here.
 -->
+
+Currently, only username / password (UID / PWD) based authentication is supported. If you need support for additional authentication mechanisms, please open an issue.
+
+The username & password can be provided through `meltano.yml` or the `target-db2`'s config.json. The user must have the following permissions in order to be able to load data into DB2.
+
+* TODO: figure out the minimal permissions requied by meltano to load data to DB2
 
 ## Usage
 
 You can easily run `target-db2` by itself or in a pipeline using [Meltano](https://meltano.com/).
 
 ### Executing the Target Directly
+
+_note: requires installing `tap-carbon-intensity`_
 
 ```bash
 target-db2 --version
