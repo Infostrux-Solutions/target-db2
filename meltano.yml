@@ -7,7 +7,6 @@ environments:
 plugins:
   extractors:
   - name: tap-postgres
-    load_schema: db2inst1
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
     config:
@@ -47,6 +46,7 @@ plugins:
       user: db2inst1
       password: pass1
       load_method: upsert
+      default_target_schema: db2inst1
 
   - name: target-jsonl
     variant: andyh1203
