@@ -19,7 +19,7 @@ pipx install target-db2
 Install from GitHub:
 
 ```bash
-pipx install git+https://github.com/haleemur-infostrux/target-db2.git@main
+pipx install git+https://github.com/Infostrux-Solutions/target-db2.git@main
 ```
 
 -->
