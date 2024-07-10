@@ -40,6 +40,12 @@ jupyterlab = "^4.2.3"
 ruff = "^0.5.1"
 psycopg2-binary = "^2.9.9"
 
+# 3.5.0 is the latest pre-commit to support python 3.8. The current version only support 3.9+
+# We should plan to drop 3.8 support 1 years after 3.8 stops receiving security updates.
+# as in, on 2025-10. (Python 3.8 has scheduled EOL on 2024-10)
+pre-commit = "3.5.0"
+
+
 [tool.ruff]
 src = ["target_db2"]
 target-version = "py38"
