@@ -7,20 +7,26 @@ import typing as t
 import pytest
 from singer_sdk.testing import get_target_test_class
 
-from target_db2.target import Targetdb2
+from target_db2.target import TargetDb2
 
-# TODO: Initialize minimal target config
-SAMPLE_CONFIG: dict[str, t.Any] = {}
+SAMPLE_CONFIG: dict[str, t.Any] = {
+    "host": "localhost",
+    "port": 50000,
+    "user": "db2inst1",
+    "password": "pass1",
+    "database": "testdb",
+    "default_target_schema": "db2inst1",
+}
 
 
 # Run standard built-in target tests from the SDK:
 StandardTargetTests = get_target_test_class(
-    target_class=Targetdb2,
+    target_class=TargetDb2,
     config=SAMPLE_CONFIG,
 )
 
 
-class TestTargetdb2(StandardTargetTests):  # type: ignore[misc, valid-type]
+class TestTargetDb2(StandardTargetTests):  # type: ignore[misc, valid-type]
     """Standard Target Tests."""
 
     @pytest.fixture(scope="class")
@@ -36,4 +42,4 @@ class TestTargetdb2(StandardTargetTests):  # type: ignore[misc, valid-type]
         return "resource"
 
 
-# TODO: Create additional tests as appropriate for your target.
+# Create additional tests as appropriate for your target.

@@ -5,12 +5,12 @@ from __future__ import annotations
 from singer_sdk import typing as th
 from singer_sdk.target_base import Target
 
-from target_db2.sinks import (
+from target_db2.Db2Sink import (
     Db2Sink,
 )
 
 
-class Targetdb2(Target):
+class TargetDb2(Target):
     """Sample target for Bb2."""
 
     name = "target-db2"
@@ -58,4 +58,4 @@ class Targetdb2(Target):
 
 
 if __name__ == "__main__":
-    Targetdb2.cli()
+    TargetDb2.cli()
