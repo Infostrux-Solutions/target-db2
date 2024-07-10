@@ -1,0 +1,53 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: target-db2
+default_environment: test
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: tap-postgres
+    load_schema: db2inst1
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    config:
+      user: testdb
+      password: testdb
+      host: localhost
+      port: 5432
+      database: testdb
+    select:
+    - public-test_table.*
+    metadata:
+      public-test_table:
+        replication-method: INCREMENTAL
+        replication-key: updated_at
+  loaders:
+  - name: target-db2
+    namespace: target_db2
+    pip_url: -e .
+    capabilities:
+    - about
+    - stream-maps
+    - record-flattening
+    settings:
+    - name: host
+    - name: port
+      kind: integer
+    - name: database
+    - name: username
+    - name: password
+      kind: string
+      sensitive: true
+
+    config:
+      host: localhost
+      port: 50000
+      database: testdb
+      user: db2inst1
+      password: pass1
+
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+
