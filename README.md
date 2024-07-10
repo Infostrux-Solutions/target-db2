@@ -71,11 +71,11 @@ target-db2 --about --format=markdown
 
 | Setting | Required | Default | Description |
 |:--------|:--------:|:-------:|:------------|
-| host | True     | None    | IBM DB2 Database Host |
-| port | True     | None    | IBM DB2 Database Port |
-| user | True     | None    | IBM DB2 Database User Name |
-| password | True     | None    | IBM DB2 Database User Password |
-| database | True     | None    | IBM DB2 Database Name |
+| host | True     | None    | IBM Db2 Database Host |
+| port | True     | None    | IBM Db2 Database Port |
+| user | True     | None    | IBM Db2 Database User Name |
+| password | True     | None    | IBM Db2 Database User Password |
+| database | True     | None    | IBM Db2 Database Name |
 | add_record_metadata | False    | None    | Add metadata to records. |
 | load_method | False    | TargetLoadMethods.APPEND_ONLY | The method to use when loading data into the destination. `append-only` will always write all input records whether that records already exists or not. `upsert` will update existing records and insert new records. `overwrite` will delete all existing records and insert all input records. |
 | batch_size_rows | False    | None    | Maximum number of rows in each batch. |
@@ -104,7 +104,7 @@ This Singer target will automatically import any environment variables within th
 `.env` if the `--config=ENV` is provided, such that config values will be considered if a matching
 environment variable is set either in the terminal context or in the `.env` file.
 
-### DB2 Authentication and Authorization
+### Db2 Authentication and Authorization
 
 <!--
 Developer TODO: If your target requires special access on the destination system, or any special authentication requirements, provide those here.
@@ -112,9 +112,9 @@ Developer TODO: If your target requires special access on the destination system
 
 Currently, only username / password (UID / PWD) based authentication is supported. If you need support for additional authentication mechanisms, please open an issue.
 
-The username & password can be provided through `meltano.yml` or the `target-db2`'s config.json. The user must have the following permissions in order to be able to load data into DB2.
+The username & password can be provided through `meltano.yml` or the `target-db2`'s config.json. The user must have the following permissions in order to be able to load data into Db2.
 
-* TODO: figure out the minimal permissions requied by meltano to load data to DB2
+* TODO: figure out the minimal permissions requied by meltano to load data to Db2.
 
 ## Usage
 

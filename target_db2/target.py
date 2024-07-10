@@ -6,12 +6,12 @@ from singer_sdk import typing as th
 from singer_sdk.target_base import Target
 
 from target_db2.sinks import (
-    db2Sink,
+    Db2Sink,
 )
 
 
 class Targetdb2(Target):
-    """Sample target for db2."""
+    """Sample target for Bb2."""
 
     name = "target-db2"
 
@@ -20,39 +20,41 @@ class Targetdb2(Target):
             "host",
             th.StringType,
             required=True,
-            description="IBM DB2 Database Host",
+            description="IBM Db2 Database Host",
         ),
         th.Property(
             "port",
             th.IntegerType,
             required=True,
-            description="IBM DB2 Database Port",
+            description="IBM Db2 Database Port",
         ),
         th.Property(
             "user",
             th.StringType,
             required=True,
-            description="IBM DB2 Database User Name",
+            description="IBM Db2 Database User Name",
         ),
         th.Property(
             "password",
             th.StringType,
             required=True,
             secret=True,  # Flag config as protected.
-            description="IBM DB2 Database User Password",
+            description="IBM Db2 Database User Password",
         ),
         th.Property(
             "database",
             th.StringType,
             required=True,
-            description="IBM DB2 Database Name",
+            description="IBM Db2 Database Name",
         ),
     ).to_dict()
 
-    # todo: decide later whether to include batch size, varchar size
-    # timeout & write method (append, upsert, overwrite)
+    # Make following user-configurable:
+    # - batch size
+    # - varchar size
+    # - timeout
 
-    default_sink_class = db2Sink
+    default_sink_class = Db2Sink
 
 
 if __name__ == "__main__":

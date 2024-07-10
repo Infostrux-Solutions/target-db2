@@ -46,6 +46,7 @@ plugins:
       database: testdb
       user: db2inst1
       password: pass1
+      load_method: upsert
 
   - name: target-jsonl
     variant: andyh1203

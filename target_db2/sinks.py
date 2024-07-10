@@ -1,12 +1,14 @@
-"""db2 target sink class, which handles writing streams."""
+"""Db2 target sink class, which handles writing streams."""
 
 from __future__ import annotations
+
 from typing import Any
-from singer_sdk.typing import _jsonschema_type_check
+
+import sqlalchemy as sa
+from singer_sdk.connectors import SQLConnector
 from singer_sdk.helpers._typing import get_datelike_property_type
 from singer_sdk.sinks import SQLSink
-from singer_sdk.connectors import SQLConnector
-import sqlalchemy as sa
+from singer_sdk.typing import _jsonschema_type_check
 
 SDC_FIELDS = [
     "_sdc_extracted_at",
@@ -17,47 +19,9 @@ SDC_FIELDS = [
     "_sdc_table_version",
 ]
 
-def to_sql_type(  # noqa: PLR0911, C901
-    jsonschema_type: dict,
-) -> sa.types.TypeEngine:
-    """Convert JSON Schema type to a SQL type.
-
-    Args:
-        jsonschema_type: The JSON Schema object.
-
-    Returns:
-        The SQL type.
-    """
-    if _jsonschema_type_check(jsonschema_type, ("string",)):
-        datelike_type = get_datelike_property_type(jsonschema_type)
-        if datelike_type:
-            if datelike_type == "date-time":
-                return sa.types.DATETIME()
-            if datelike_type in "time":
-                return sa.types.TIME()
-            if datelike_type == "date":
-                return sa.types.DATE()
-
-        maxlength = jsonschema_type.get("maxLength")
-        return sa.types.VARCHAR(maxlength)
-
-    if _jsonschema_type_check(jsonschema_type, ("integer",)):
-        return sa.types.INTEGER()
-    if _jsonschema_type_check(jsonschema_type, ("number",)):
-        return sa.types.DECIMAL()
-    if _jsonschema_type_check(jsonschema_type, ("boolean",)):
-        return sa.types.BOOLEAN()
-
-    if _jsonschema_type_check(jsonschema_type, ("object",)):
-        return sa.types.VARCHAR()
-
-    if _jsonschema_type_check(jsonschema_type, ("array",)):
-        return sa.types.VARCHAR()
-
-    return sa.types.VARCHAR()
 
 class DB2Connector(SQLConnector):
-    """The connector for DB2"""
+    """The connector for Db2."""
 
     allow_temp_tables: bool = False
     allow_column_alter: bool = False
@@ -65,7 +29,8 @@ class DB2Connector(SQLConnector):
     allow_overwrite: bool = True
 
     def get_sqlalchemy_url(self, config: dict[str, Any]) -> str:
-        sa_url = 'ibm_db_sa://{user}:{password}@{host}:{port}/{database}'
+        """Construct & return a sqlalchemy DB URL."""
+        sa_url = "ibm_db_sa://{user}:{password}@{host}:{port}/{database}"
         return sa_url.format(**config)
 
     def schema_exists(self, schema_name: str) -> bool:
@@ -77,7 +42,7 @@ class DB2Connector(SQLConnector):
         Returns:
             True if the database schema exists, False if not.
 
-        Overrides parent method to perform schema name comparison removing 
+        Overrides parent method to perform schema name comparison removing
         unnecessary spaces which seem to padded on by `sa.inspect.get_schema_names`
 
         Performs schema name comparison in case insensitive manner by converting
@@ -86,19 +51,22 @@ class DB2Connector(SQLConnector):
         schemas = sa.inspect(self._engine).get_schema_names()
         exists = schema_name.upper() in {x.strip().upper() for x in schemas}
         if exists:
-            self.logger.debug(f"Schema `{schema_name.upper()}` found")
+            self.logger.debug("Schema `%s` found", schema_name)
         else:
-            self.logger.debug(f"Schema `{schema_name.upper()}` found")
+            self.logger.debug("Schema `%s` not found", schema_name)
         return exists
 
-
     def to_sql_type(self, jsonschema_type: dict) -> sa.types.TypeEngine:
+        """Convert JsonSchema to IBM Db2 data type."""
         if _jsonschema_type_check(jsonschema_type, ("string",)):
             datelike_type = get_datelike_property_type(jsonschema_type)
             if not datelike_type and "maxLength" not in jsonschema_type:
-                jsonschema_type["maxLength"] = 10000 # setting this for testing. Need to find a better way to pass this.
+                jsonschema_type["maxLength"] = 10000
+                # Make configurable later.
         return super(DB2Connector, DB2Connector).to_sql_type(jsonschema_type)
 
-class db2Sink(SQLSink):
-    """IBM DB2 target sink class."""
+
+class Db2Sink(SQLSink):
+    """IBM Db2 target sink class."""
+
     connector_class = DB2Connector
