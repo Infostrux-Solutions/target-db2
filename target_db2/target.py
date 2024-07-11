@@ -5,7 +5,7 @@ from __future__ import annotations
 from singer_sdk import typing as th
 from singer_sdk.target_base import Target
 
-from target_db2.Db2Sink import (
+from target_db2.connector import (
     Db2Sink,
 )
 

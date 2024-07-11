@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import json
 import typing as t
-
+from textwrap import dedent
+from random import choice
+from string import ascii_lowercase
 import sqlalchemy as sa
 from singer_sdk.connectors import SQLConnector
 from singer_sdk.helpers._typing import get_datelike_property_type
 from singer_sdk.helpers.capabilities import TargetLoadMethods
 from singer_sdk.typing import _jsonschema_type_check
+from singer_sdk.sinks import SQLSink
 
 if t.TYPE_CHECKING:
     from sqlalchemy.engine import Engine
@@ -267,6 +270,7 @@ class DB2Connector(SQLConnector):
         is_primary_key: bool = False,  # noqa: FBT001, FBT002
     ) -> sa.types.TypeEngine:
         """Convert JsonSchema to IBM Db2 data type."""
+
         string_length = MAX_PK_STRING_SIZE if is_primary_key else MAX_VARCHAR_SIZE
         if _jsonschema_type_check(jsonschema_type, ("string",)):
             datelike_type = get_datelike_property_type(jsonschema_type)
@@ -277,70 +281,6 @@ class DB2Connector(SQLConnector):
         if is_obj or is_arr:
             return JSONVARCHAR(MAX_VARCHAR_SIZE)
         return super(DB2Connector, DB2Connector).to_sql_type(jsonschema_type)
-
-    def bulk_insert_records(
-        self,
-        full_table_name: str,
-        schema: dict,
-        records: t.Iterable[dict[str, t.Any]],
-    ) -> int | None:
-        """Bulk insert records to an existing destination table.
-
-        The default implementation uses a generic SQLAlchemy bulk insert operation.
-        This method may optionally be overridden by developers in order to provide
-        faster, native bulk uploads.
-
-        Args:
-            full_table_name: the target table name.
-            schema: the JSON schema for the new table, to be used when inferring column
-                names.
-            records: the input records.
-
-        Returns:
-            True if table exists, False if not, None if unsure or undetectable.
-        """
-        breakpoint()
-        insert_sql = self.generate_insert_statement(
-            full_table_name,
-            schema,
-        )
-        if isinstance(insert_sql, str):
-            insert_sql = sa.text(insert_sql)
-
-        conformed_records = [self.conform_record(record) for record in records]
-        property_names = list(self.conform_schema(schema)["properties"].keys())
-
-        # Create new record dicts with missing properties filled in with None
-        new_records = [
-            {name: record.get(name) for name in property_names}
-            for record in conformed_records
-        ]
-
-        # convert dicts and lists to string via json.dumps if column has type
-        # object or array
-        object_cols = [
-            name
-            for name, x in schema["properties"].items()
-            if "object" == x["type"] or "object" in x["type"]
-        ]
-        array_cols = [
-            name
-            for name, x in schema["properties"].items()
-            if "array" == x["type"] or "array" in x["type"]
-        ]
-        json_cols = object_cols + array_cols
-        for c in json_cols:
-            for rec in new_records:
-                rec[c] = (
-                    json.dumps(rec[c]) if isinstance(rec[c], (list, dict)) else rec[c]
-                )
-
-        self.logger.info("Inserting with SQL: %s", insert_sql)
-
-        with self.connector._connect() as conn, conn.begin():  # noqa: SLF001
-            result = conn.execute(insert_sql, new_records)
-
-        return result.rowcount
 
     def create_empty_table(  # noqa: PLR0913
         self,
@@ -390,3 +330,159 @@ class DB2Connector(SQLConnector):
 
         _ = sa.Table(table_name, meta, *columns)
         meta.create_all(self._engine)
+
+
+class Db2Sink(SQLSink):
+    """IBM Db2 target sink class."""
+
+    connector_class = DB2Connector
+
+    def __init__(self, *args, **kwargs):
+        """Initialize the Sink."""
+        super().__init__(*args, **kwargs)
+        self.load_table_name = self.generate_load_table_name()
+
+    def generate_load_table_name(self):
+        """generate a name for the loading table."""
+        random_chars = "".join([choice(ascii_lowercase) for _ in range(5)])
+        return "load_" + self.table_name + "_" + random_chars
+
+    @property
+    def full_load_table_name(self) -> str:
+        """Return the fully qualified table name.
+
+        Returns:
+            The fully qualified table name.
+        """
+        return self.connector.get_fully_qualified_name(
+            table_name=self.load_table_name,
+            schema_name=self.schema_name,
+            db_name=self.database_name,
+        )
+
+    def drop_load_table(self):
+        drop_sql = sa.text(f"DROP TABLE {self.full_load_table_name}")
+        with self.connector._connect() as conn, conn.begin():  # noqa: SLF001
+            conn.execute(drop_sql)
+
+    @property
+    def object_and_array_columns(self):
+        object_cols = [
+            name
+            for name, x in self.schema["properties"].items()
+            if "object" == x["type"] or "object" in x["type"]
+        ]
+        array_cols = [
+            name
+            for name, x in self.schema["properties"].items()
+            if "array" == x["type"] or "array" in x["type"]
+        ]
+        return object_cols + array_cols
+
+    @staticmethod
+    def deduplicate_records(records, key_properties):
+        seen = set()
+        deduplicated_records = []
+        for rec in reversed(records):
+            key = tuple([rec[k] for k in key_properties])
+            if key not in seen:
+                deduplicated_records.append(rec)
+            seen.add(key)
+        return list(reversed(deduplicated_records))
+
+    def process_batch(self, context: dict) -> None:
+        """Process a batch with the given batch context.
+
+        Conforms array and object types and calls self.bulk_insert_records.
+        This is necessary since IBM DB2 does not have native JSON types.
+
+        Data is inserted into a loading table, and the final table is
+        updated via an merge upsert statement. Then the loading table is dropped.
+
+        If duplicates are present, the last record is kept.
+
+        Args:
+            context: Stream partition or context dictionary.
+        """
+
+        if self.key_properties:
+            records = self.deduplicate_records(context["records"], self.key_properties)
+        else:
+            records = context["records"]
+        for c in self.object_and_array_columns:
+            for rec in records:
+                if c in rec:
+                    rec[c] = (
+                        json.dumps(rec[c])
+                        if isinstance(rec[c], (list, dict))
+                        else rec[c]
+                    )
+        self.connector.prepare_table(
+            self.full_load_table_name,
+            schema=self.schema,
+            primary_keys=self.key_properties,
+            as_temp_table=False,
+        )
+        self.connector.prepare_table(
+            self.full_table_name,
+            schema=self.schema,
+            primary_keys=self.key_properties,
+            as_temp_table=False,
+        )
+
+        self.bulk_insert_records(
+            full_table_name=self.full_load_table_name,
+            schema=self.schema,
+            records=records,
+        )
+        self.merge_upsert_from_table(
+            from_table_name=self.full_load_table_name,
+            target_table_name=self.full_table_name,
+            join_keys=self.key_properties,
+        )
+        self.drop_load_table()
+
+    def merge_upsert_from_table(
+        self, target_table_name: str, from_table_name: str, join_keys: list[str]
+    ) -> None:
+        """Issue a MERGE statement to upsert data to the final table.
+
+        Given the final table & load tables have 3 colummns: col1, col2 & col3
+        where col1 is the join key, This method will issue the following MERGE statement.
+
+            ```
+            MERGE INTO final_tbl ft
+            USING load_final_tbl_abc lt
+            ON (ft.col1 = lt.col1)
+            WHEN MATCHED THEN UPDATE
+            SET
+              col2 = lt.col2
+            , col3 = lt.col3
+            WHEN NOT MATCHED THEN
+            INSERT (col1, col2, col3)
+            VALUES (lt.col1, lt.col2, lt.col3);
+            ```
+        """
+        join_exprs = [f'ft."{c}" = lt."{c}"' for c in join_keys]
+        final_columns = [f'"{c}"' for c in self.schema["properties"].keys()]
+        load_columns = [f"lt.{c}" for c in final_columns]
+        update_exprs = [
+            f'"{c}" = lt."{c}"'
+            for c in self.schema["properties"].keys()
+            if c not in join_keys
+        ]
+        merge_query = f"""
+            MERGE INTO {target_table_name} ft
+            USING {from_table_name} lt
+            ON ({' AND '.join(join_exprs)})
+            WHEN MATCHED THEN UPDATE
+              SET {", ".join(update_exprs)}
+            WHEN NOT MATCHED THEN
+              INSERT ({', '.join(final_columns)})
+              VALUES ({', '.join(load_columns)});
+            """
+
+        merge_stmt = sa.text(dedent(merge_query).strip())
+
+        with self.connector._connect() as conn, conn.begin():
+            conn.execute(merge_stmt)
