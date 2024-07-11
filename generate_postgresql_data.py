@@ -25,11 +25,12 @@ PORT = 5432
 DATABASE = "testdb"
 
 TEST_TABLE = "test_table"
-TEST_TRIGGER = TEST_TABLE + '_update_updated_at'
+TEST_TRIGGER = TEST_TABLE + "_update_updated_at"
+
 
 def setup():
     f"""Create a test table {TEST_TABLE}
-    
+
     Create a simple test table with 2 data columns & 3 timestamp columns.
 
     Define a trigger to ensure the updated_at column is set on each
@@ -65,7 +66,7 @@ def setup():
 
     check_table_exists_stmt = """
     SELECT COUNT(*) > 0 table_exists
-    FROM information_schema.tables 
+    FROM information_schema.tables
     WHERE table_name = %s
     """
 
@@ -73,7 +74,7 @@ def setup():
         cursor = DB.cursor()
         cursor.execute(check_table_exists_stmt, (TEST_TABLE,))
         exists = cursor.fetchone()
-        if exists[0] == False:
+        if not exists[0]:
             cursor.execute(create_test_table_stmt)
             cursor.execute(create_procedure_update_updated_at_stmt)
             cursor.execute(create_trigger_test_table_updated_at_stmt)
@@ -100,8 +101,8 @@ def generate_activity_test_table():
 
     count_rows_stmt = f"SELECT COUNT(*) nrows FROM {TEST_TABLE}"
     del_row_stmt = f"""
-    UPDATE {TEST_TABLE} 
-    SET deleted_at = CURRENT_TIMESTAMP 
+    UPDATE {TEST_TABLE}
+    SET deleted_at = CURRENT_TIMESTAMP
     WHERE id = %s
     """
 
@@ -115,12 +116,12 @@ def generate_activity_test_table():
     SELECT id
     FROM {TEST_TABLE}
     WHERE deleted_at IS NULL
-    ORDER BY RANDOM() 
+    ORDER BY RANDOM()
     LIMIT %s
     """
 
     ins_stmt = f"""
-    INSERT INTO {TEST_TABLE} (col1, col2) 
+    INSERT INTO {TEST_TABLE} (col1, col2)
     VALUES (%s, %s)
     """
 
@@ -138,27 +139,26 @@ def generate_activity_test_table():
         num_to_ins = randint(1, 10)
         LOGGER.info(
             'Simulating activity on %s: {"deletes": %i, "updates": %i, "inserts": %i}',
-            TEST_TABLE, num_to_del, num_to_upd, num_to_ins
+            TEST_TABLE,
+            num_to_del,
+            num_to_upd,
+            num_to_ins,
         )
         if num_to_del > 0:
-            cursor.execute(
-                sel_active_rand_rows_stmt, (num_to_del,)
-            )
+            cursor.execute(sel_active_rand_rows_stmt, (num_to_del,))
             rows_to_del = cursor.fetchall()
             for row in rows_to_del:
                 cursor.execute(del_row_stmt, (row[0],))
             DB.commit()
         if num_to_upd > 0:
-            cursor.execute(
-                sel_active_rand_rows_stmt, (num_to_upd,)
-            )
+            cursor.execute(sel_active_rand_rows_stmt, (num_to_upd,))
             rows_to_upd = cursor.fetchall()
             for row in rows_to_upd:
                 cursor.execute(upd_col1_stmt, (fake.name(), row[0]))
             DB.commit()
 
         for _ in range(num_to_ins):
-            record = (fake.name(), randint(1,100))
+            record = (fake.name(), randint(1, 100))
             cursor.execute(ins_stmt, record)
         DB.commit()
 
@@ -169,9 +169,9 @@ def generate_activity_test_table():
 
 def main():
     f"""Set up the database for test and simulate activity.
-     
+
     Create a test table called `{TEST_TABLE}, and generate
-    inserts, updates and soft deletes for 10 minutes 
+    inserts, updates and soft deletes for 10 minutes
     or until user presses CTRL+C"""
 
     setup()
