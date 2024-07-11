@@ -28,7 +28,7 @@ SDC_FIELDS = [
 ]
 
 
-class OBJECTVARCHAR(sa.types.TypeDecorator):
+class JSONVARCHAR(sa.types.TypeDecorator):
     impl = VARCHAR
 
     def process_bind_param(self, value, dialect):
@@ -66,7 +66,7 @@ class DB2Connector(SQLConnector):
         """
         return sa.DDL(
             "ALTER TABLE %(table_name)s ALTER COLUMN %(column_name)s SET DATA TYPE %(column_type)s",
-            {
+            {  # type: ignore
                 "table_name": table_name,
                 "column_name": column_name,
                 "column_type": column_type,
@@ -272,12 +272,75 @@ class DB2Connector(SQLConnector):
             datelike_type = get_datelike_property_type(jsonschema_type)
             if not datelike_type and "maxLength" not in jsonschema_type:
                 jsonschema_type["maxLength"] = string_length
-                # Make configurable later.
-        elif _jsonschema_type_check(
-            jsonschema_type, ("object")
-        ) or _jsonschema_type_check(jsonschema_type, ("array")):
-            return OBJECTVARCHAR(MAX_VARCHAR_SIZE)
+        is_obj = _jsonschema_type_check(jsonschema_type, ("object",))
+        is_arr = _jsonschema_type_check(jsonschema_type, ("array",))
+        if is_obj or is_arr:
+            return JSONVARCHAR(MAX_VARCHAR_SIZE)
         return super(DB2Connector, DB2Connector).to_sql_type(jsonschema_type)
+
+    def bulk_insert_records(
+        self,
+        full_table_name: str,
+        schema: dict,
+        records: t.Iterable[dict[str, t.Any]],
+    ) -> int | None:
+        """Bulk insert records to an existing destination table.
+
+        The default implementation uses a generic SQLAlchemy bulk insert operation.
+        This method may optionally be overridden by developers in order to provide
+        faster, native bulk uploads.
+
+        Args:
+            full_table_name: the target table name.
+            schema: the JSON schema for the new table, to be used when inferring column
+                names.
+            records: the input records.
+
+        Returns:
+            True if table exists, False if not, None if unsure or undetectable.
+        """
+        breakpoint()
+        insert_sql = self.generate_insert_statement(
+            full_table_name,
+            schema,
+        )
+        if isinstance(insert_sql, str):
+            insert_sql = sa.text(insert_sql)
+
+        conformed_records = [self.conform_record(record) for record in records]
+        property_names = list(self.conform_schema(schema)["properties"].keys())
+
+        # Create new record dicts with missing properties filled in with None
+        new_records = [
+            {name: record.get(name) for name in property_names}
+            for record in conformed_records
+        ]
+
+        # convert dicts and lists to string via json.dumps if column has type
+        # object or array
+        object_cols = [
+            name
+            for name, x in schema["properties"].items()
+            if "object" == x["type"] or "object" in x["type"]
+        ]
+        array_cols = [
+            name
+            for name, x in schema["properties"].items()
+            if "array" == x["type"] or "array" in x["type"]
+        ]
+        json_cols = object_cols + array_cols
+        for c in json_cols:
+            for rec in new_records:
+                rec[c] = (
+                    json.dumps(rec[c]) if isinstance(rec[c], (list, dict)) else rec[c]
+                )
+
+        self.logger.info("Inserting with SQL: %s", insert_sql)
+
+        with self.connector._connect() as conn, conn.begin():  # noqa: SLF001
+            result = conn.execute(insert_sql, new_records)
+
+        return result.rowcount
 
     def create_empty_table(  # noqa: PLR0913
         self,

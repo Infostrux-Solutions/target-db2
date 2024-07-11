@@ -11,7 +11,7 @@ from sqlalchemy import (
     select,
 )
 
-from target_db2.connector import OBJECTVARCHAR
+from target_db2.connector import JSONVARCHAR
 
 creds = {
     "user": "db2inst1",
@@ -60,7 +60,7 @@ def test_column_objectvarchar(db):
         tablename,
         test_metadata,
         Column("id", Integer, primary_key=True, autoincrement=True),
-        Column("jsondata", OBJECTVARCHAR(1000)),
+        Column("jsondata", JSONVARCHAR(1000)),
     )
     records = [
         {"jsondata": {"hello": 0}},
