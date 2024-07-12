@@ -1337,19 +1337,21 @@ files = [
 ]
 
 [[package]]
-name = "ibm-db-sa"
+name = "ibm_db_sa"
 version = "0.4.0"
 description = "SQLAlchemy support for IBM Data Servers"
 optional = false
 python-versions = "*"
-files = [
-    {file = "ibm_db_sa-0.4.0-py3-none-any.whl", hash = "sha256:03cea38a06e41a823d657559bca93ba458382a90f5c4f7d80bb9e2a78234a6d3"},
-    {file = "ibm_db_sa-0.4.0.tar.gz", hash = "sha256:75d536407e5966f1dc747b6322938c4ad5d63b104edb834d667d03e64efef15b"},
-]
+files = []
+develop = true
 
 [package.dependencies]
-ibm-db = ">=2.0.0"
+ibm_db = ">=2.0.0"
 sqlalchemy = ">=0.7.3"
+
+[package.source]
+type = "directory"
+url = "libs/python-ibmdbsa-975e254"
 
 [[package]]
 name = "identify"
@@ -4378,4 +4380,4 @@ s3 = ["fs-s3fs"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "684b12068c532ad933839dfe68aec8727e3d8fdea481e976b24a2b49a81c8e38"
+content-hash = "aa21365887cd1881091413abaf4d0f20ab879f64367a7bc0b8895699fb0af3fb"

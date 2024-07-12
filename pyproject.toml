@@ -25,7 +25,7 @@ singer-sdk = { version="~=0.38.0", extras = ["faker"] }
 fs-s3fs = { version = "~=1.1.1", optional = true }
 requests = "~=2.32.0"
 ibm-db = "^3.2.3"
-ibm-db-sa = { path = "libs/python-ibmdbsa-975e254" }
+ibm-db-sa = { path = "libs/python-ibmdbsa-975e254", develop = true }
 meltano = "^3.4.2"
 
 [tool.poetry.dev-dependencies]
