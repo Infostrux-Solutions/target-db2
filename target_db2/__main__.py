@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from target_db2.target import Targetdb2
+from target_db2.target import TargetDb2
 
-Targetdb2.cli()
+TargetDb2.cli()

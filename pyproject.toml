@@ -25,7 +25,7 @@ singer-sdk = { version="~=0.38.0", extras = ["faker"] }
 fs-s3fs = { version = "~=1.1.1", optional = true }
 requests = "~=2.32.0"
 ibm-db = "^3.2.3"
-ibm-db-sa = "^0.4.0"
+ibm-db-sa = { path = "libs/python-ibmdbsa-975e254", develop = true }
 meltano = "^3.4.2"
 
 [tool.poetry.dev-dependencies]
@@ -57,7 +57,17 @@ ignore = [
     "COM812",  # missing-trailing-comma
     "ISC001",  # single-line-implicit-string-concatenation
 ]
+exclude = ["libs/**"]
 select = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101", # asserts allowed in tests...
+    "ARG", # Unused function args -> fixtures nevertheless are functionally relevant...
+    "FBT", # Don't care about booleans as positional arguments in tests, e.g. via @pytest.mark.parametrize()
+    "PLR2004", # Magic value used in comparison, ...
+    "S311", # Standard pseudo-random generators are not suitable for cryptographic purposes
+]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
@@ -68,10 +78,14 @@ known-first-party = ["target_db2"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+
+[tool.mypy]
+exclude = ["^libs.*"]
+
 [build-system]
 requires = ["poetry-core==1.9.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 # CLI declaration
-target-db2 = 'target_db2.target:Targetdb2.cli'
+target-db2 = 'target_db2.target:TargetDb2.cli'

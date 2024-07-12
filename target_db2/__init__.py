@@ -1,1 +1,1 @@
-"""Target for db2."""
+"""Target for Db2."""
