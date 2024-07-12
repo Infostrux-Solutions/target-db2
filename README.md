@@ -200,3 +200,18 @@ docker compose down
 
 See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the Meltano Singer SDK to
 develop your own Singer taps and targets.
+
+
+## Minimal Permissions Required on DB2
+
+This library will perform the following actions on DB2.
+
+* CREATE TABLE
+* DROP TABLE
+* ALTER TABLE ADD COLUMN
+* ALTER TABLE ALTER COLUMN
+* INSERT INTO TABLE
+* MERGE INTO TABLE USING
+* [OPTIONALLY] CREATE SCHEMA
+
+_NOTE: `CREATE SCHEMA` is used to create a new schema where data will be loaded. If the stated target_schema, specified via `default_target_schema` exists, this library will not issue a `CREATE SCHEMA` command_
