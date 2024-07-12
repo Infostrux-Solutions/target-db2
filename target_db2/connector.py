@@ -310,6 +310,14 @@ class DB2Connector(SQLConnector):
         _ = sa.Table(table_name, meta, *columns)
         meta.create_all(self._engine)
 
+    def drop_table(self, table_name: str) -> None:
+        """Drop a table."""
+        quoted_name = self.quote(table_name)
+        self.logger.info("Dropping Table %(quoted_name)s", quoted_name)
+        drop_sql = sa.text(f"DROP TABLE {quoted_name}")
+        with self._connect() as conn, conn.begin():
+            conn.execute(drop_sql)
+
 
 class Db2Sink(SQLSink):
     """IBM Db2 target sink class."""
@@ -338,17 +346,6 @@ class Db2Sink(SQLSink):
             schema_name=self.schema_name,
             db_name=self.database_name,
         )
-
-    def drop_load_table(self) -> None:
-        """Drop the load table.
-
-        This is called at the end of the EL process if an upsert
-        loading method is used.
-        """
-        quoted_name = self.connector.quote(self.full_load_table_name)
-        drop_sql = sa.text(f"DROP TABLE {quoted_name}")
-        with self.connector._connect() as conn, conn.begin():  # noqa: SLF001
-            conn.execute(drop_sql)
 
     @property
     def object_and_array_columns(self) -> list[str]:
@@ -439,7 +436,7 @@ class Db2Sink(SQLSink):
                 target_table_name=self.connector.quote(self.full_table_name),
                 join_keys=self.key_properties,
             )
-            self.drop_load_table()
+            self.connector.drop_table(self.full_load_table_name)
 
     def merge_upsert_from_table(
         self, target_table_name: str, from_table_name: str, join_keys: list[str]
