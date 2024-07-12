@@ -250,7 +250,8 @@ class DB2Connector(SQLConnector):
         is_primary_key: bool = False,  # noqa: FBT001, FBT002
     ) -> sa.types.TypeEngine:
         """Convert JsonSchema to IBM Db2 data type."""
-        string_length = MAX_PK_STRING_SIZE if is_primary_key else MAX_VARCHAR_SIZE
+        varchar_size = self.config.get("varchar_size", MAX_VARCHAR_SIZE)
+        string_length = MAX_PK_STRING_SIZE if is_primary_key else varchar_size
         if _jsonschema_type_check(jsonschema_type, ("string",)):
             datelike_type = get_datelike_property_type(jsonschema_type)
             if not datelike_type and "maxLength" not in jsonschema_type:
@@ -258,7 +259,7 @@ class DB2Connector(SQLConnector):
         is_obj = _jsonschema_type_check(jsonschema_type, ("object",))
         is_arr = _jsonschema_type_check(jsonschema_type, ("array",))
         if is_obj or is_arr:
-            return JSONVARCHAR(MAX_VARCHAR_SIZE)
+            return JSONVARCHAR(varchar_size)
         return super(DB2Connector, DB2Connector).to_sql_type(jsonschema_type)
 
     def create_empty_table(  # noqa: PLR0913
