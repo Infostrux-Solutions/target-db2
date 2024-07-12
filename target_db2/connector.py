@@ -173,7 +173,7 @@ class DB2Connector(SQLConnector):
 
         column_add_ddl = self.get_column_add_ddl(
             table_name=self.quote(full_table_name),
-            column_name=self.quote(column_name),
+            column_name=column_name,
             column_type=sql_type,
         )
         with self._engine.connect() as conn, conn.begin():
