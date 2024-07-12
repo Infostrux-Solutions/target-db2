@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from textwrap import dedent
+
 from singer_sdk import typing as th
 from singer_sdk.target_base import Target
 
@@ -46,6 +48,18 @@ class TargetDb2(Target):
             th.StringType,
             required=True,
             description="IBM Db2 Database Name",
+        ),
+        th.Property(
+            "varchar_size",
+            th.IntegerType,
+            description=dedent(
+                """
+                Field size for Varchar type. Default 10000.
+                Since JSON values are serialized to varchar,
+                it may be necessary to increase this value.
+                Max possible value 32764
+                """
+            ).strip(),
         ),
     ).to_dict()
 

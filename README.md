@@ -76,6 +76,7 @@ target-db2 --about --format=markdown
 | user | True     | None    | IBM Db2 Database User Name |
 | password | True     | None    | IBM Db2 Database User Password |
 | database | True     | None    | IBM Db2 Database Name |
+| varchar_size | False    | None    | Field size for Varchar type. Default 10000. <BR/>Since JSON values are serialized to varchar, <BR/>it may be necessary to increase this value. <BR/>Max possible value 32764 |
 | add_record_metadata | False    | None    | Add metadata to records. |
 | load_method | False    | TargetLoadMethods.APPEND_ONLY | The method to use when loading data into the destination. `append-only` will always write all input records whether that records already exists or not. `upsert` will update existing records and insert new records. `overwrite` will delete all existing records and insert all input records. |
 | batch_size_rows | False    | None    | Maximum number of rows in each batch. |
@@ -106,9 +107,6 @@ environment variable is set either in the terminal context or in the `.env` file
 
 ### Db2 Authentication and Authorization
 
-<!--
-Developer TODO: If your target requires special access on the destination system, or any special authentication requirements, provide those here.
--->
 
 Currently, only username / password (UID / PWD) based authentication is supported. If you need support for additional authentication mechanisms, please open an issue.
 
