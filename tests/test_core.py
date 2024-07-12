@@ -15,7 +15,7 @@ SAMPLE_CONFIG: dict[str, t.Any] = {
     "user": "db2inst1",
     "password": "pass1",
     "database": "testdb",
-    "default_target_schema": "db2inst1",
+    "default_target_schema": "DB2INST1",
 }
 
 
