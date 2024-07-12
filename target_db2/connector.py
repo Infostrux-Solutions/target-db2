@@ -311,13 +311,11 @@ class DB2Connector(SQLConnector):
         _ = sa.Table(table_name, meta, *columns)
         meta.create_all(self._engine)
 
-    def drop_table(self, table_name: str) -> None:
-        """Drop a table."""
-        quoted_name = self.quote(table_name)
-        self.logger.info("Dropping Table %(quoted_name)s", quoted_name)
-        drop_sql = sa.text(f"DROP TABLE {quoted_name}")
+    def execute_queries(self, queries: list[Executable]) -> None:
+        """Execute queries in 1 transaction."""
         with self._connect() as conn, conn.begin():
-            conn.execute(drop_sql)
+            for stmt in queries:
+                conn.execute(stmt)
 
 
 class Db2Sink(SQLSink):
@@ -432,16 +430,17 @@ class Db2Sink(SQLSink):
                 schema=self.schema,
                 records=records,
             )
-            self.merge_upsert_from_table(
+            merge_sql = self.merge_upsert_from_table(
                 from_table_name=self.connector.quote(self.full_load_table_name),
                 target_table_name=self.connector.quote(self.full_table_name),
                 join_keys=self.key_properties,
             )
-            self.connector.drop_table(self.full_load_table_name)
+            drop_sql = self.generate_drop_table_statement(self.full_load_table_name)
+            self.connector.execute_queries([merge_sql, drop_sql])
 
     def merge_upsert_from_table(
         self, target_table_name: str, from_table_name: str, join_keys: list[str]
-    ) -> None:
+    ) -> Executable:
         """Issue a MERGE statement to upsert data to the final table.
 
         I.E, if the final table & load tables have 3 colummns: col1, col2 & col3
@@ -486,9 +485,7 @@ class Db2Sink(SQLSink):
               VALUES ({', '.join(load_columns)});
             """).strip()  # noqa: S608
 
-        merge_stmt = sa.text(merge_query)
-        with self.connector._connect() as conn, conn.begin():  # noqa: SLF001
-            conn.execute(merge_stmt)
+        return sa.text(merge_query)
 
     def conform_name(
         self,
@@ -544,3 +541,9 @@ class Db2Sink(SQLSink):
             """,  # noqa: S608
         )
         return statement.rstrip()
+
+    def generate_drop_table_statement(self, table_name: str) -> Executable:
+        """Drop a table."""
+        quoted_name = self.connector.quote(table_name)
+        self.logger.info("Dropping Table %(quoted_name)s", quoted_name)
+        return sa.text(f"DROP TABLE {quoted_name}")
