@@ -17,8 +17,7 @@ services:
     volumes:
     - db2_database:/database/
     - db2_home:/home/
-    networks:
-      - testing-network
+
   # postgres:
   #   image: postgres:16-alpine
   #   ports:
@@ -32,18 +31,13 @@ services:
   #   volumes:
   #   - pg_data:/var/lib/postgresql/data
 
-  meltano-test:
+  meltano:
     build:
       context: .
     depends_on:
       - db2
-    networks:
-    - testing-network
-    entrypoint: poetry run pytest
 
 volumes:
   db2_database:
   db2_home:
-
-networks:
-  testing-network:
+  # pg_data:
