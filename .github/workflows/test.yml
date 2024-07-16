@@ -42,7 +42,7 @@ jobs:
     - name: "Print docker container ls"
       run: docker container ls
     - name: "Print docker container inspect db2"
-      run: docker container container inspect target-db2-db2-1
+      run: docker container inspect target-db2-db2-1
     - name: Test with pytest
       run: |
         poetry run pytest
