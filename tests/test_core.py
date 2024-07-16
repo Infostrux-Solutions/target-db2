@@ -15,7 +15,6 @@ from sqlalchemy import (
     create_engine,
     insert,
     select,
-    text,
 )
 from sqlalchemy.schema import DropTable
 
@@ -34,8 +33,10 @@ SAMPLE_CONFIG: dict[str, t.Any] = {
     "database": "testdb",
     "default_target_schema": "DB2INST1",
 }
-db2_connection_string = "ibm_db_sa://{user}:{password}@{host}:{port}/{database}".format(
-    **SAMPLE_CONFIG
+db2_connection_string = (
+    "ibm_db_sa://{user}:{password}@{host}:{port}/{database}:PROTOCOL=TCPIP;".format(
+        **SAMPLE_CONFIG
+    )
 )
 
 
@@ -97,27 +98,3 @@ StandardTargetTests = get_target_test_class(
 
 class TestTargetDb2(StandardTargetTests):  # type: ignore[misc, valid-type]
     """Standard Target Tests."""
-
-    def teardown(self) -> None:
-        """Drop the test tables."""
-        schema: str = SAMPLE_CONFIG["default_target_schema"]
-        test_tables: list[str] = [
-            "RECORD_MISSING_FIELDS",
-            "TEST_ARRAY_DATA",
-            "TEST_DUPLICATE_RECORDS",
-            "TEST_NO_PK",
-            "TEST_OBJECT_SCHEMA_NO_PROPERTIES",
-            "TEST_OBJECT_SCHEMA_WITH_PROPERTIES",
-            "TEST_OPTIONAL_ATTRIBUTES",
-            "TEST_RECORD_MISSING_KEY_PROPERTY",
-            "TEST_SCHEMA_UPDATES",
-            "TEST_STRINGS",
-            "TEST_STRINGS_IN_ARRAYS",
-            "TEST_STRINGS_IN_OBJECTS",
-            "TestCamelcase",
-            "testSpecialCharsinattributes",
-            "ForecastingTypeToCategory",
-        ]
-        self.target_class().get_sink().connector.execute(
-            [text(f'DROP TABLE {schema}."{t}"') for t in test_tables]
-        )
