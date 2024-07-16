@@ -6,27 +6,36 @@ name: Test target-db2
 on: [push]
 
 jobs:
-  pytest:
+  tests:
+    name: "Integration Testing"
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
-      run: |
-        pip install poetry
-    - name: Install dependencies
-      run: |
-        poetry env use ${{ matrix.python-version }}
-        poetry install
-    - name: Test with pytest
-      run: |
-        poetry run pytest
+      - uses: actions/checkout@v4
+      - name: "Set up container environment"
+        run: docker compose -f docker-compose-ci.yml up -d --wait
+
+
+  # pytest:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - name: Set up Python ${{ matrix.python-version }}
+  #     uses: actions/setup-python@v5
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
+  #   - name: Install Poetry
+  #     run: |
+  #       pip install poetry
+  #   - name: Install dependencies
+  #     run: |
+  #       poetry env use ${{ matrix.python-version }}
+  #       poetry install
+  #   - name: Test with pytest
+  #     run: |
+  #       poetry run pytest

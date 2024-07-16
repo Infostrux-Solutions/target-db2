@@ -19,18 +19,6 @@ services:
     - db2_home:/home/
     networks:
       - testing-network
-  # postgres:
-  #   image: postgres:16-alpine
-  #   ports:
-  #   - "5432:5432"
-  #   expose:
-  #   - "5432"
-  #   environment:
-  #   - POSTGRES_PASSWORD=testdb
-  #   - POSTGRES_USER=testdb
-  #   - POSTGRES_DB=testdb
-  #   volumes:
-  #   - pg_data:/var/lib/postgresql/data
 
   meltano-test:
     build:
@@ -40,6 +28,8 @@ services:
     networks:
     - testing-network
     entrypoint: poetry run pytest
+    environment:
+      - DB2HOST=db2
 
 volumes:
   db2_database:
