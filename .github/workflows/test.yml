@@ -9,8 +9,18 @@ jobs:
   tests:
     name: "Integration Testing"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
+      - name: "With Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: "Print Python Version"
+        run: python --version
       - name: "Set up container environment"
         run: docker compose -f docker-compose-ci.yaml up db2 -d --wait
       - name: "Sleep 300 to let Db2 container to finish initializing"

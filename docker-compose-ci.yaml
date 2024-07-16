@@ -21,6 +21,8 @@ services:
     build:
       context: .
       dockerfile: ci.Dockerfile
+      args:
+        - PYTHON_VERSION=$python-version
     stdin_open: true
     tty: true
     entrypoint: poetry run pytest
@@ -30,10 +32,6 @@ services:
     - DB2HOST=db2
     depends_on:
       - db2
-
-volumes:
-  db2_database:
-  db2_home:
 
 networks:
   ci-network:
