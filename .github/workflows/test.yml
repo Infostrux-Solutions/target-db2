@@ -7,7 +7,7 @@ on: [push]
 
 jobs:
   tests:
-    name: "Integration Testing"
+    name: "Unit Testing"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
