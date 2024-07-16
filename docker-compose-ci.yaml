@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: ci.Dockerfile
       args:
-        - PYTHON_VERSION=$python-version
+        - PYTHON_VERSION=$PYTHON_VERSION
     stdin_open: true
     tty: true
     entrypoint: poetry run pytest
