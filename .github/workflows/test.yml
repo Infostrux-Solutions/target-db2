@@ -24,7 +24,7 @@ jobs:
       - name: "Set up container environment"
         run: docker compose -f docker-compose-ci.yaml up db2 -d --wait
       - name: "build worker container"
-        run: docker compose -f docker-compose-ci.yaml build target
+        run: echo $PYTHON_VERSION && docker compose -f docker-compose-ci.yaml build target
       - name: "Run Tests"
         run: docker compose -f docker-compose-ci.yaml run target
 
