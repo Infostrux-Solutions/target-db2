@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import typing as t
 
 import pytest
@@ -25,17 +26,15 @@ if t.TYPE_CHECKING:
 
 
 SAMPLE_CONFIG: dict[str, t.Any] = {
-    "host": "localhost",
+    "host": os.environ.get("DB2HOST", "localhost"),
     "port": 50000,
     "user": "db2inst1",
     "password": "pass1",
     "database": "testdb",
     "default_target_schema": "DB2INST1",
 }
-db2_connection_string = (
-    "ibm_db_sa://{user}:{password}@{host}:{port}/{database}:PROTOCOL=TCPIP;".format(
-        **SAMPLE_CONFIG
-    )
+db2_connection_string = "ibm_db_sa://{user}:{password}@{host}:{port}/{database}".format(
+    **SAMPLE_CONFIG
 )
 
 

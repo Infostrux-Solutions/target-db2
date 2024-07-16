@@ -9,17 +9,31 @@ services:
     restart: always
     ports:
     - "50000:50000"
-    expose:
-    - "50000"
+    networks:
+      - ci-network
     environment:
     - LICENSE=accept
     - DB2INST1_PASSWORD=pass1
     - DBNAME=testdb
     - DB2COMM=tcpip
-    volumes:
-    - db2_database:/database/
-    - db2_home:/home/
+
+  target:
+    build:
+      context: .
+      dockerfile: ci.Dockerfile
+    stdin_open: true
+    tty: true
+    entrypoint: poetry run pytest
+    networks:
+      - ci-network
+    environment:
+    - DB2HOST=db2
+    depends_on:
+      - db2
 
 volumes:
   db2_database:
   db2_home:
+
+networks:
+  ci-network:
