@@ -6,6 +6,7 @@ services:
     # "DATABASE=testdb;HOSTNAME=localhost;PORT=50000;PROTOCOL=TCPIP;UID=db2inst1;PWD=pass1"
     image: icr.io/db2_community/db2
     privileged: true
+    restart: always
     ports:
     - "50000:50000"
     expose:
@@ -14,6 +15,7 @@ services:
     - LICENSE=accept
     - DB2INST1_PASSWORD=pass1
     - DBNAME=testdb
+    - DB2COMM=tcpip
     volumes:
     - db2_database:/database/
     - db2_home:/home/

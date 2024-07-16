@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import typing as t
-from os import environ
 
 import pytest
 from singer_sdk.testing import get_target_test_class
@@ -26,7 +25,7 @@ if t.TYPE_CHECKING:
 
 
 SAMPLE_CONFIG: dict[str, t.Any] = {
-    "host": environ.get("DB2HOST", "localhost"),
+    "host": "localhost",
     "port": 50000,
     "user": "db2inst1",
     "password": "pass1",

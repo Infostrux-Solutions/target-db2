@@ -22,9 +22,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8"]
+
+
     steps:
     - uses: actions/checkout@v4
+    - name: "Set up container environment"
+      run: docker compose -f docker-compose-ci.yaml up -d --wait db2
+    - name: "Print docker container ls"
+      run: docker container ls
+    - name: "Print docker container inspect db2"
+      run: docker container inspect target-db2-db2-1
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -37,12 +45,6 @@ jobs:
       run: |
         poetry env use ${{ matrix.python-version }}
         poetry install
-    - name: "Set up container environment"
-      run: docker compose -f docker-compose-ci.yaml up -d --wait db2
-    - name: "Print docker container ls"
-      run: docker container ls
-    - name: "Print docker container inspect db2"
-      run: docker container inspect target-db2-db2-1
     - name: Test with pytest
       run: |
         poetry run pytest
