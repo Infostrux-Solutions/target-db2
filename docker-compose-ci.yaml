@@ -6,38 +6,32 @@ services:
     # "DATABASE=testdb;HOSTNAME=localhost;PORT=50000;PROTOCOL=TCPIP;UID=db2inst1;PWD=pass1"
     image: icr.io/db2_community/db2
     privileged: true
+    restart: always
     ports:
     - "50000:50000"
-    expose:
-    - "50000"
+    networks:
+      - ci-network
     environment:
     - LICENSE=accept
     - DB2INST1_PASSWORD=pass1
     - DBNAME=testdb
-    volumes:
-    - db2_database:/database/
-    - db2_home:/home/
+    - DB2COMM=tcpip
 
-  postgres:
-    image: postgres:16-alpine
-    ports:
-    - "5432:5432"
-    expose:
-    - "5432"
-    environment:
-    - POSTGRES_PASSWORD=testdb
-    - POSTGRES_USER=testdb
-    - POSTGRES_DB=testdb
-    volumes:
-    - pg_data:/var/lib/postgresql/data
-
-  meltano:
+  target:
     build:
       context: .
+      dockerfile: ci.Dockerfile
+      args:
+        - PYTHON_VERSION
+    stdin_open: true
+    tty: true
+    entrypoint: poetry run pytest
+    networks:
+      - ci-network
+    environment:
+    - DB2HOST=db2
     depends_on:
       - db2
 
-volumes:
-  db2_database:
-  db2_home:
-  pg_data:
+networks:
+  ci-network:
