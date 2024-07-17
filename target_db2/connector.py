@@ -299,13 +299,16 @@ class DB2Connector(SQLConnector):
             msg = f"Schema for '{full_table_name}' does not define properties: {schema}"
             raise RuntimeError(msg) from e
         for property_name, property_jsonschema in properties.items():
-            is_primary_key = property_name in primary_keys
+            is_primary_key: bool = property_name in primary_keys
+            # set autoincrement=False so we don't create a primary key
+            # column with a sequence
             columns.append(
-                sa.Column(
-                    property_name,
-                    self.to_sql_type(property_jsonschema, is_primary_key),
+                sa.Column(  # type: ignore[call-overload]
+                    name=property_name,
+                    type_=self.to_sql_type(property_jsonschema, is_primary_key),
                     primary_key=is_primary_key,
-                ),
+                    autoincrement=False,
+                )
             )
 
         _ = sa.Table(table_name, meta, *columns)
@@ -419,7 +422,7 @@ class Db2Sink(SQLSink):
                 records=records,
             )
         else:
-            self.connector.prepare_table(
+            self.connector.create_empty_table(
                 self.full_load_table_name,
                 schema=self.schema,
                 primary_keys=self.key_properties,

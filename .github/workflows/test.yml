@@ -6,27 +6,24 @@ name: Test target-db2
 on: [push]
 
 jobs:
-  pytest:
+  tests:
+    name: "Unit Testing"
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
-      run: |
-        pip install poetry
-    - name: Install dependencies
-      run: |
-        poetry env use ${{ matrix.python-version }}
-        poetry install
-    - name: Test with pytest
-      run: |
-        poetry run pytest
+      - uses: actions/checkout@v4
+      - name: "With Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: "Set up container environment"
+        run: docker compose -f docker-compose-ci.yaml up db2 -d --wait
+      - name: "build worker container"
+        run: PYTHON_VERSION=$(python --version | grep -Po "3.\d{1,2}") docker compose -f docker-compose-ci.yaml build target
+      - name: "Wait for DB2 Initialization"
+        run: python wait_for_db2_init.py
+      - name: "Run Tests"
+        run: docker compose -f docker-compose-ci.yaml run target
