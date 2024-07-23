@@ -22,7 +22,7 @@ if t.TYPE_CHECKING:
     from sqlalchemy.engine import Engine
     from sqlalchemy.sql import Executable  # type: ignore[attr-defined]
 
-from ibm_db_sa import VARCHAR
+from target_db2.ibm_db_sa import VARCHAR
 
 MAX_VARCHAR_SIZE = 10000
 MAX_PK_STRING_SIZE = 1022
@@ -34,6 +34,8 @@ SDC_FIELDS = [
     "_sdc_sequence",
     "_sdc_table_version",
 ]
+
+sa.dialects.registry.register("ibm_db_sa", "target_db2.ibm_db_sa", "dialect")
 
 
 class JSONVARCHAR(sa.types.TypeDecorator):

@@ -234,7 +234,7 @@ class DB2Reflector(BaseReflector):
         c = connection.execute(s)
         return c.first() is not None
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_sequence_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         sys_sequence = self.sys_sequences
@@ -245,7 +245,7 @@ class DB2Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_schema_names(self, connection, **kw):
         sysschema = self.sys_schemas
         query = (
@@ -255,7 +255,7 @@ class DB2Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_table_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         systbl = self.sys_tables
@@ -267,7 +267,7 @@ class DB2Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_table_comment(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -280,7 +280,7 @@ class DB2Reflector(BaseReflector):
         )
         return {"text": connection.execute(query).scalar()}
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
 
@@ -292,7 +292,7 @@ class DB2Reflector(BaseReflector):
 
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_definition(self, connection, viewname, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         viewname = self.denormalize_name(viewname)
@@ -305,7 +305,7 @@ class DB2Reflector(BaseReflector):
 
         return connection.execute(query).scalar()
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_columns(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -359,7 +359,7 @@ class DB2Reflector(BaseReflector):
             )
         return sa_columns
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_pk_constraint(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -389,7 +389,7 @@ class DB2Reflector(BaseReflector):
             "name": pk_name,
         }
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_primary_keys(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -412,7 +412,7 @@ class DB2Reflector(BaseReflector):
             pk_columns.extend(cols)
         return [self.normalize_name(col) for col in pk_columns]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_foreign_keys(self, connection, table_name, schema=None, **kw):
         default_schema = self.default_schema_name
         current_schema = self.denormalize_name(schema or default_schema)
@@ -469,7 +469,7 @@ class DB2Reflector(BaseReflector):
                 fschema[r[0]]["referred_columns"].append(self.normalize_name(r[7]))
         return [value for key, value in fschema.items()]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_incoming_foreign_keys(self, connection, table_name, schema=None, **kw):
         default_schema = self.default_schema_name
         current_schema = self.denormalize_name(schema or default_schema)
@@ -520,7 +520,7 @@ class DB2Reflector(BaseReflector):
                 fschema[r[0]]["referred_columns"].append(self.normalize_name(r[7]))
         return [value for key, value in fschema.items()]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_indexes(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -558,7 +558,7 @@ class DB2Reflector(BaseReflector):
                 )
         return indexes
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_unique_constraints(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -739,7 +739,7 @@ class AS400Reflector(BaseReflector):
     def get_table_comment(self, connection, table_name, schema=None, **kw):
         raise NotImplementedError
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_sequence_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         sys_sequence = self.sys_sequences
@@ -750,7 +750,7 @@ class AS400Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_schema_names(self, connection, **kw):
         sysschema = self.sys_schemas
         query = (
@@ -762,7 +762,7 @@ class AS400Reflector(BaseReflector):
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
     # Retrieves a list of table names for a given schema
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_table_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         systbl = self.sys_tables
@@ -774,7 +774,7 @@ class AS400Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
 
@@ -785,7 +785,7 @@ class AS400Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_definition(self, connection, viewname, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         viewname = self.denormalize_name(viewname)
@@ -797,7 +797,7 @@ class AS400Reflector(BaseReflector):
         )
         return connection.execute(query).scalar()
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_columns(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -851,7 +851,7 @@ class AS400Reflector(BaseReflector):
             )
         return sa_columns
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_pk_constraint(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -880,7 +880,7 @@ class AS400Reflector(BaseReflector):
                 pk_name = self.normalize_name(key[2])
         return {"constrained_columns": pk_columns, "name": pk_name}
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_primary_keys(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -903,7 +903,7 @@ class AS400Reflector(BaseReflector):
 
         return [self.normalize_name(key[0]) for key in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_foreign_keys(self, connection, table_name, schema=None, **kw):
         default_schema = self.default_schema_name
         current_schema = self.denormalize_name(schema or default_schema)
@@ -952,7 +952,7 @@ class AS400Reflector(BaseReflector):
         return [value for key, value in fschema.items()]
 
     # Retrieves a list of index names for a given schema
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_indexes(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -985,7 +985,7 @@ class AS400Reflector(BaseReflector):
                 }
         return [value for key, value in indexes.items()]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_unique_constraints(self, connection, table_name, schema=None, **kw):
         uniqueConsts = []
         return uniqueConsts
@@ -1133,7 +1133,7 @@ class OS390Reflector(BaseReflector):
         c = connection.execute(s)
         return c.first() is not None
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_sequence_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         sys_sequence = self.sys_sequences
@@ -1144,7 +1144,7 @@ class OS390Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_schema_names(self, connection, **kw):
         sysschema = self.sys_tables
         query = (
@@ -1157,7 +1157,7 @@ class OS390Reflector(BaseReflector):
     def get_table_comment(self, connection, table_name, schema=None, **kw):
         raise NotImplementedError
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_table_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         systbl = self.sys_tables
@@ -1169,7 +1169,7 @@ class OS390Reflector(BaseReflector):
         )
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_names(self, connection, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
 
@@ -1181,7 +1181,7 @@ class OS390Reflector(BaseReflector):
 
         return [self.normalize_name(r[0]) for r in connection.execute(query)]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_view_definition(self, connection, viewname, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         viewname = self.denormalize_name(viewname)
@@ -1194,7 +1194,7 @@ class OS390Reflector(BaseReflector):
 
         return connection.execute(query).scalar()
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_columns(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -1247,7 +1247,7 @@ class OS390Reflector(BaseReflector):
             )
         return sa_columns
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_pk_constraint(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -1273,7 +1273,7 @@ class OS390Reflector(BaseReflector):
             "name": None,
         }
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_primary_keys(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -1296,7 +1296,7 @@ class OS390Reflector(BaseReflector):
             pk_columns.extend(cols)
         return [self.normalize_name(col) for col in pk_columns]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_foreign_keys(self, connection, table_name, schema=None, **kw):
         default_schema = self.default_schema_name
         current_schema = self.denormalize_name(schema or default_schema)
@@ -1352,7 +1352,7 @@ class OS390Reflector(BaseReflector):
                 fschema[r[0]]["referred_columns"].append(self.normalize_name(r[7]))
         return [value for key, value in fschema.items()]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_incoming_foreign_keys(self, connection, table_name, schema=None, **kw):
         default_schema = self.default_schema_name
         current_schema = self.denormalize_name(schema or default_schema)
@@ -1410,7 +1410,7 @@ class OS390Reflector(BaseReflector):
                 fschema[r[0]]["referred_columns"].append(self.normalize_name(r[7]))
         return [value for key, value in fschema.items()]
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_indexes(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)
@@ -1450,7 +1450,7 @@ class OS390Reflector(BaseReflector):
                 )
         return indexes
 
-    @reflection.cache
+    @reflection.cache  # type: ignore[call-arg]
     def get_unique_constraints(self, connection, table_name, schema=None, **kw):
         current_schema = self.denormalize_name(schema or self.default_schema_name)
         table_name = self.denormalize_name(table_name)

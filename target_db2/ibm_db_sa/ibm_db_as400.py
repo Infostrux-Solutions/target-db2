@@ -1,4 +1,4 @@
-from sqlalchemy import __version__ as SA_Version
+from sqlalchemy import __version__ as SA_Version  # type:ignore[attr-defined]
 
 SA_Version = [int(ver_token) for ver_token in SA_Version.split(".")[0:2]]
 if SA_Version < [2, 0]:

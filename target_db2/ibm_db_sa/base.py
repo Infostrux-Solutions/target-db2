@@ -21,7 +21,7 @@
 import datetime
 import re
 
-from sqlalchemy import __version__ as SA_Version
+from sqlalchemy import __version__ as SA_Version  # type: ignore[attr-defined]
 from sqlalchemy import schema as sa_schema
 from sqlalchemy import types as sa_types
 from sqlalchemy import util
@@ -1140,7 +1140,7 @@ class DB2DDLCompiler(compiler.DDLCompiler):
 
 class DB2IdentifierPreparer(compiler.IdentifierPreparer):
     reserved_words = RESERVED_WORDS
-    illegal_initial_characters = set(range(10)).union(["_", "$"])
+    illegal_initial_characters = set(range(10)).union(["_", "$"])  # type:ignore[assignment]
 
 
 class _SelectLastRowIDMixin:
@@ -1199,7 +1199,7 @@ class DB2Dialect(default.DefaultDialect):
     if SA_Version < [1, 4]:
         returns_unicode_strings = False
     elif SA_Version < [2, 0]:
-        returns_unicode_strings = sa_types.String.RETURNS_CONDITIONAL
+        returns_unicode_strings = sa_types.String.RETURNS_CONDITIONAL  # type:ignore[attr-defined]
     else:
         returns_unicode_strings = True
     postfetch_lastrowid = True

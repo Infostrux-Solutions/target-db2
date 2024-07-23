@@ -89,4 +89,4 @@ class AS400Dialect_zxjdbc(DB2Dialect_zxjdbc):
     jdbc_db_name = "as400"
     jdbc_driver_name = "com.ibm.as400.access.AS400JDBCDriver"
 
-    _reflector_cls = ibm_reflection.AS400Reflector
+    _reflector_cls = ibm_reflection.AS400Reflector  # type:ignore[assignment]
