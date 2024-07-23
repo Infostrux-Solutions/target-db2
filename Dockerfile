@@ -7,7 +7,6 @@ WORKDIR /etl
 # library target-db2 is published publicly.
 COPY target_db2 .
 COPY pyproject.toml .
-COPY libs .
 
 # the meltano.yml project can contain all the configuration needed
 # for simple projects
