@@ -1,9 +1,0 @@
-*.pyc
-*.swp
-*.orig
-build
-tmp
-dist
-.venv
-ibm_db_sa.egg-info/
-.coverage

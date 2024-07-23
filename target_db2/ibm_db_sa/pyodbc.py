@@ -100,7 +100,7 @@ class AS400Dialect_pyodbc(PyODBCConnector, DB2Dialect):
 
     #    pyodbc_driver_name = "iSeries Access ODBC Driver"
     pyodbc_driver_name = "IBM i Access ODBC Driver"
-    _reflector_cls = ibm_reflection.AS400Reflector
+    _reflector_cls = ibm_reflection.AS400Reflector  # type:ignore[assignment]
 
     def create_connect_args(self, url):
         opts = url.translate_connect_args(username="user")

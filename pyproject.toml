@@ -25,7 +25,6 @@ singer-sdk = { version="~=0.38.0", extras = ["faker"] }
 fs-s3fs = { version = "~=1.1.1", optional = true }
 requests = "~=2.32.0"
 ibm-db = "^3.2.3"
-ibm-db-sa = { path = "libs/python-ibmdbsa-975e254", develop = true }
 meltano = "^3.4.2"
 
 [tool.poetry.dev-dependencies]
@@ -57,7 +56,7 @@ ignore = [
     "COM812",  # missing-trailing-comma
     "ISC001",  # single-line-implicit-string-concatenation
 ]
-exclude = ["libs/**"]
+exclude = ["target_db2/ibm_db_sa"]
 select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -78,9 +77,6 @@ known-first-party = ["target_db2"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
-
-[tool.mypy]
-exclude = ["^libs.*"]
 
 [build-system]
 requires = ["poetry-core==1.9.0"]
