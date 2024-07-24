@@ -65,7 +65,6 @@ class TargetDb2(Target):
 
     # Make following user-configurable:
     # - batch size
-    # - varchar size
     # - timeout
 
     default_sink_class = Db2Sink
