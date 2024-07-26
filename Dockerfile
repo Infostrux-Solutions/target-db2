@@ -14,7 +14,7 @@ COPY pyproject.toml .
 # into multiple files.
 COPY meltano.yml .
 RUN meltano lock --update --all
-
+RUN meltano install
 # containerized projects are read-only.
 ENV MELTANO_PROJECT_READONLY 1
 

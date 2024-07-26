@@ -14,7 +14,7 @@ plugins:
     config:
       user: testdb
       password: testdb
-      host: localhost
+      host: postgres
       port: 5432
       database: testdb
     select:
@@ -42,14 +42,10 @@ plugins:
       sensitive: true
 
     config:
-      host: localhost
+      host: db2
       port: 50000
       database: testdb
       user: db2inst1
       password: pass1
       load_method: upsert
       default_target_schema: db2inst1
-
-  - name: target-jsonl
-    variant: andyh1203
-    pip_url: target-jsonl
