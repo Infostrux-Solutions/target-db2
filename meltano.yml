@@ -27,20 +27,6 @@ plugins:
   - name: target-db2
     namespace: target_db2
     pip_url: target-db2
-    capabilities:
-    - about
-    - stream-maps
-    - record-flattening
-    settings:
-    - name: host
-    - name: port
-      kind: integer
-    - name: database
-    - name: username
-    - name: password
-      kind: string
-      sensitive: true
-
     config:
       host: db2
       port: 50000
@@ -49,3 +35,4 @@ plugins:
       password: pass1
       load_method: upsert
       default_target_schema: db2inst1
+      add_record_metadata: true

@@ -32,6 +32,7 @@ SAMPLE_CONFIG: dict[str, t.Any] = {
     "password": "pass1",
     "database": "testdb",
     "default_target_schema": "DB2INST1",
+    "add_record_metadata": True,
 }
 db2_connection_string = "ibm_db_sa://{user}:{password}@{host}:{port}/{database}".format(
     **SAMPLE_CONFIG
