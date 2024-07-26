@@ -26,14 +26,6 @@ from target_db2.ibm_db_sa import VARCHAR
 
 MAX_VARCHAR_SIZE = 10000
 MAX_PK_STRING_SIZE = 1022
-SDC_FIELDS = [
-    "_sdc_extracted_at",
-    "_sdc_received_at",
-    "_sdc_batched_at",
-    "_sdc_deleted_at",
-    "_sdc_sequence",
-    "_sdc_table_version",
-]
 
 sa.dialects.registry.register("ibm_db_sa", "target_db2.ibm_db_sa", "dialect")
 
@@ -94,6 +86,39 @@ class DB2Connector(SQLConnector):
         """
         with self._engine.connect() as conn, conn.begin():
             conn.execute(sa.schema.CreateSchema(schema_name))
+
+    def get_column_add_ddl(
+        self,
+        table_name: str,
+        column_name: str,
+        column_type: sa.types.TypeEngine,
+    ) -> sa.DDL:
+        """Get the create column DDL statement.
+
+        Override this if your database uses a different syntax for creating columns.
+
+        Args:
+            table_name: Fully qualified table name of column to alter.
+            column_name: Column name to create.
+            column_type: New column sqlalchemy type.
+
+        Returns:
+            A sqlalchemy DDL instance.
+        """
+        create_column_clause = sa.schema.CreateColumn(
+            sa.Column(
+                column_name,
+                column_type,
+            ),
+        )
+        compiled = create_column_clause.compile(self._engine)
+        return sa.DDL(
+            "ALTER TABLE %(table_name)s ADD COLUMN %(create_column_clause)s",
+            {  # type: ignore[arg-type]
+                "table_name": table_name,
+                "create_column_clause": compiled,
+            },
+        )
 
     def _adapt_column_type(
         self,

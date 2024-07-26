@@ -1,6 +1,8 @@
 version: 1
 send_anonymous_usage_stats: true
 project_id: target-db2
+state_backend:
+  uri: file:///meltano-state/state
 default_environment: test
 environments:
 - name: test
@@ -24,7 +26,7 @@ plugins:
   loaders:
   - name: target-db2
     namespace: target_db2
-    pip_url: -e .
+    pip_url: target-db2
     capabilities:
     - about
     - stream-maps

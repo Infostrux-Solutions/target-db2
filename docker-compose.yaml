@@ -36,6 +36,12 @@ services:
       context: .
     depends_on:
       - db2
+    environment:
+    - DB2HOST=db2
+    volumes:
+    - type: bind
+      source: ./meltano-state
+      target: /meltano-state
 
 volumes:
   db2_database:
