@@ -2,11 +2,7 @@
 
 `target-db2` is a Singer target for db2.
 
-Build with the [Meltano Target SDK](https://sdk.meltano.com).
-
-<!--
-
-Developer TODO: Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
+Build with the [Meltano Target SDK](https://sdk.meltano.com), by the [Infostrux Team](https://www.infostrux.com/)
 
 ## Installation
 
@@ -22,23 +18,16 @@ Install from GitHub:
 pipx install git+https://github.com/Infostrux-Solutions/target-db2.git@main
 ```
 
--->
 
-Currently, the only supported method to install this target is. In future, the package will be published to PyPi
-
-### Install from GitHub:
-
-```bash
-pipx install git+https://github.com/haleemur-infostrux/target-db2.git@main
-```
-
-### Install from GitHub in the Meltano Configuration (meltano.yml)
+### Install via Meltano Configuration (meltano.yml)
 
 ```yaml
   loaders:
   - name: target-db2
     namespace: target_db2
-    pip_url: git+https://github.com/haleemur-infostrux/target-db2.git@main
+    # uncomment one of the following
+    # pip_url: git+https://github.com/Infostrux-Solutions/target-db2.git@main
+    # pip_url: target-db2
 ```
 
 _complete the meltano installation with appropriate configuration settings described in [Settings](#settings) section below._
@@ -213,3 +202,13 @@ This library will perform the following actions on DB2.
 * [OPTIONALLY] CREATE SCHEMA
 
 _NOTE: `CREATE SCHEMA` is used to create a new schema where data will be loaded. If the stated target_schema, specified via `default_target_schema` exists, this library will not issue a `CREATE SCHEMA` command_
+
+## Known Limitations & Issues
+
+# Complex Data Structures (arrays & maps)
+
+Complex values such as `dict` or `list` will be json encoded and stored as `VARCHAR`. The `VARCHAR` column has a default size of 10000, and it is user configurable via the setting `varchar_size`.
+
+IBM Db2 allows VARCHAR columns up to 32704 bytes.
+
+This target currently does not write to CLOB fields, PRs welcome!

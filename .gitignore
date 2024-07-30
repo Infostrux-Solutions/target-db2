@@ -4,7 +4,7 @@
 # Ignore meltano internal cache and sqlite systemdb
 
 .meltano/
-
+meltano-state/
 # Ignore jsonl-output directory used by target-jsonl for local testing
 output/
 

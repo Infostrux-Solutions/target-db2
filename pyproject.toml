@@ -4,12 +4,21 @@ version = "0.0.1"
 description = "`target-db2` is a Singer target for db2, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Haleemur Ali <haleemur@infostrux.com>"]
+homepage = "https://www.infostrux.com"
+repository = "https://github.com/Infostrux-Solutions/target-db2"
 keywords = [
     "ELT",
-    "db2",
+    "IBM",
+    "Db2",
+    "Singer",
+    "Singer Target",
+    "Meltano",
+    "Meltano SDK"
 ]
 classifiers = [
     "Intended Audience :: Developers",
+    "Intended Audience :: Data Engineers",
+    "Intended Audience :: Data Scientists",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",

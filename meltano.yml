@@ -1,6 +1,8 @@
 version: 1
 send_anonymous_usage_stats: true
 project_id: target-db2
+state_backend:
+  uri: file:///meltano-state/state
 default_environment: test
 environments:
 - name: test
@@ -12,7 +14,7 @@ plugins:
     config:
       user: testdb
       password: testdb
-      host: localhost
+      host: postgres
       port: 5432
       database: testdb
     select:
@@ -24,30 +26,13 @@ plugins:
   loaders:
   - name: target-db2
     namespace: target_db2
-    pip_url: -e .
-    capabilities:
-    - about
-    - stream-maps
-    - record-flattening
-    settings:
-    - name: host
-    - name: port
-      kind: integer
-    - name: database
-    - name: username
-    - name: password
-      kind: string
-      sensitive: true
-
+    pip_url: target-db2
     config:
-      host: localhost
+      host: db2
       port: 50000
       database: testdb
       user: db2inst1
       password: pass1
       load_method: upsert
       default_target_schema: db2inst1
-
-  - name: target-jsonl
-    variant: andyh1203
-    pip_url: target-jsonl
+      add_record_metadata: true
