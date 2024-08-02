@@ -43,10 +43,11 @@ plugins:
       public-test_table:
         replication-method: INCREMENTAL
         replication-key: updated_at
+        key-properties: [id]
   loaders:
   - name: target-db2
     namespace: target_db2
-    pip_url: target-db2
+    pip_url: -e .
     config:
       host: db2
       port: 50000
