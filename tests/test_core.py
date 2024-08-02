@@ -15,10 +15,11 @@ from sqlalchemy import (
     create_engine,
     insert,
     select,
+    text,
 )
 from sqlalchemy.schema import DropTable
 
-from target_db2.connector import JSONVARCHAR
+from target_db2.connector import JSONVARCHAR, DB2Connector
 from target_db2.target import TargetDb2
 
 if t.TYPE_CHECKING:
@@ -97,3 +98,38 @@ StandardTargetTests = get_target_test_class(
 
 class TestTargetDb2(StandardTargetTests):  # type: ignore[misc, valid-type]
     """Standard Target Tests."""
+
+
+class Connector(DB2Connector):
+    """Test Connector."""
+
+    def get_sqlalchemy_url(self, config: dict[str, t.Any]) -> str:
+        """Construct & return a sqlalchemy DB URL."""
+        sa_url = "ibm_db_sa://{user}:{password}@{host}:{port}/{database}"
+        return sa_url.format(**SAMPLE_CONFIG)
+
+
+def test_get_column_add_ddl() -> None:
+    """Test new columns are quoted if necessary."""
+    connector = Connector()
+    connector.create_empty_table(
+        "test_alter_table_add_column",
+        {
+            "properties": {
+                "_id": {"type": ["integer"]},
+                "email": {"type": ["string"]},
+                "name": {"type": ["string"]},
+            }
+        },
+        primary_keys=["_id"],
+    )
+    column_add_ddl = connector.get_column_add_ddl(
+        "test_alter_table_add_column", "_metadata_column", Integer()
+    )
+    expected = (
+        'ALTER TABLE test_alter_table_add_column ADD COLUMN "_metadata_column" INT'
+    )
+    assert str(column_add_ddl) == expected
+    connector.execute_queries(
+        [text("drop table if exists test_alter_table_add_column")]
+    )
