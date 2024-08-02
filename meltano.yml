@@ -1,11 +1,31 @@
 version: 1
 send_anonymous_usage_stats: true
 project_id: target-db2
-state_backend:
-  uri: file:///meltano-state/state
-default_environment: test
+
+default_environment: local
+
+
 environments:
-- name: test
+- name: local
+  config:
+    state_backend:
+      url: ./local-state/state
+
+    plugins:
+      extractors:
+      - name: tap-postgres
+        config:
+          host: localhost
+      loaders:
+        - name: target-db2
+          config:
+            host: localhost
+
+- name: docker
+  config:
+    state_backend:
+      url: file:///meltano-state/state
+
 plugins:
   extractors:
   - name: tap-postgres
