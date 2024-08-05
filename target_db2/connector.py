@@ -111,7 +111,7 @@ class DB2Connector(SQLConnector):
                 column_type,
             ),
         )
-        compiled = create_column_clause.compile(self._engine)
+        compiled = create_column_clause.compile(self._engine).string
         return sa.DDL(
             "ALTER TABLE %(table_name)s ADD COLUMN %(create_column_clause)s",
             {  # type: ignore[arg-type]
@@ -575,5 +575,5 @@ class Db2Sink(SQLSink):
     def generate_drop_table_statement(self, table_name: str) -> Executable:
         """Drop a table."""
         quoted_name = self.connector.quote(table_name)
-        self.logger.info("Dropping Table %(quoted_name)s", quoted_name)
+        self.logger.info("Dropping Table %s", quoted_name)
         return sa.text(f"DROP TABLE {quoted_name}")

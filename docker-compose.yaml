@@ -38,6 +38,7 @@ services:
       - db2
     environment:
     - DB2HOST=db2
+    - MELTANO_ENVIRONMENT=docker
     volumes:
     - type: bind
       source: ./meltano-state
