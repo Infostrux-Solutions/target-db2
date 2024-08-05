@@ -17,8 +17,6 @@ keywords = [
 ]
 classifiers = [
     "Intended Audience :: Developers",
-    "Intended Audience :: Data Engineers",
-    "Intended Audience :: Data Scientists",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
