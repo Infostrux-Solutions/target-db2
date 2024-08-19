@@ -43,7 +43,7 @@ s3 = ["fs-s3fs"]
 
 [tool.poetry.group.dev.dependencies]
 jupyterlab = "^4.2.3"
-ruff = "^0.5.2"
+ruff = ">=0.5.2,<0.7.0"
 psycopg2-binary = "^2.9.9"
 
 # 3.5.0 is the latest pre-commit to support python 3.8. The current version only support 3.9+
