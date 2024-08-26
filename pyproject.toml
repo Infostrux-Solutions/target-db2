@@ -41,7 +41,7 @@ jupyterlab = "^4.2.3"
 ruff = ">=0.5.2,<0.7.0"
 psycopg2-binary = "^2.9.9"
 pytest = ">=7.4.0"
-meltano = "^3.4.2"
+meltano = "^3.5.0"
 
 # 3.5.0 is the latest pre-commit to support python 3.8. The current version only support 3.9+
 # We should plan to drop 3.8 support 1 years after 3.8 stops receiving security updates.
