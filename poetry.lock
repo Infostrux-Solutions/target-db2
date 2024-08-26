@@ -2,18 +2,22 @@
 
 [[package]]
 name = "aiodocker"
-version = "0.21.0"
-description = "Docker API client for asyncio"
+version = "0.22.2"
+description = "A simple Docker HTTP API wrapper written with asyncio and aiohttp."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8.0"
 files = [
-    {file = "aiodocker-0.21.0-py3-none-any.whl", hash = "sha256:6fe00135bb7dc40a407669d3157ecdfd856f3737d939df54f40a479d40cf7bdc"},
-    {file = "aiodocker-0.21.0.tar.gz", hash = "sha256:1f2e6db6377195962bb676d4822f6e3a0c525e1b5d60b8ebbab68230bff3d227"},
+    {file = "aiodocker-0.22.2-py3-none-any.whl", hash = "sha256:ac16c9e13c01446a57b32481edca3557cdb8678fe19bb1d2debfe0cb7dc2ab29"},
+    {file = "aiodocker-0.22.2.tar.gz", hash = "sha256:8730795a817836d22df36efb04dc0f07c09f5f66b61dac539a7e436d6f4e1af0"},
 ]
 
 [package.dependencies]
-aiohttp = ">=3.6"
-typing-extensions = ">=3.6.5"
+aiohttp = ">=3.8"
+
+[package.extras]
+ci = ["aiohttp (==3.9.5)", "async-timeout (==4.0.3)", "multidict (==6.0.5)", "yarl (==1.9.4)"]
+dev = ["async-timeout (==4.0.3)", "codecov (==2.1.13)", "mypy (==1.10.1)", "packaging (==24.1)", "pre-commit (>=3.5.0)", "pytest (==8.2.2)", "pytest-asyncio (==0.23.7)", "pytest-cov (==5.0.0)", "pytest-sugar (==1.0.0)", "ruff (==0.5.0)", "ruff-lsp (==0.0.54)", "towncrier (==23.11.0)"]
+doc = ["alabaster (==0.7.16)", "sphinx (==7.3.7)", "sphinx-autodoc-typehints (==2.2.2)", "sphinxcontrib-asyncio (==0.3.0)"]
 
 [[package]]
 name = "aiohttp"
@@ -712,13 +716,13 @@ files = [
 
 [[package]]
 name = "check-jsonschema"
-version = "0.28.6"
+version = "0.29.2"
 description = "A jsonschema CLI and pre-commit hook"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "check_jsonschema-0.28.6-py3-none-any.whl", hash = "sha256:34cf368d5ba78a94ec0053d39cf35e3bde41b19e350b5a80eec823730ba61ce1"},
-    {file = "check_jsonschema-0.28.6.tar.gz", hash = "sha256:b4df7b94df5b0ac181969687ad519491b5f47e6c76230c846a05e06623bbb5c6"},
+    {file = "check_jsonschema-0.29.2-py3-none-any.whl", hash = "sha256:6470ff23d848a26b1e77db1141827002f5fff3138295d3345c19b2410d345aa0"},
+    {file = "check_jsonschema-0.29.2.tar.gz", hash = "sha256:a633aae257f16e5298853edf18fd30ab94878fd88bd6b91902cd7158151c675d"},
 ]
 
 [package.dependencies]
@@ -731,8 +735,8 @@ requests = "<3.0"
 tomli = {version = ">=2.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
-dev = ["click-type-test (==0.0.7)", "coverage (<8)", "pytest (<9)", "pytest-xdist (<4)", "responses (==0.25.0)"]
-docs = ["furo (==2024.5.6)", "sphinx (<8)", "sphinx-issues (<5)"]
+dev = ["click-type-test (==0.0.7)", "coverage (<8)", "pytest (<9)", "pytest-xdist (<4)", "responses (==0.25.3)"]
+docs = ["furo (==2024.7.18)", "sphinx (<8)", "sphinx-issues (<5)"]
 
 [[package]]
 name = "click"
@@ -809,13 +813,13 @@ test = ["pytest"]
 
 [[package]]
 name = "croniter"
-version = "2.0.5"
+version = "3.0.3"
 description = "croniter provides iteration for datetime object with cron like format"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.6"
 files = [
-    {file = "croniter-2.0.5-py2.py3-none-any.whl", hash = "sha256:fdbb44920944045cc323db54599b321325141d82d14fa7453bc0699826bbe9ed"},
-    {file = "croniter-2.0.5.tar.gz", hash = "sha256:f1f8ca0af64212fbe99b1bee125ee5a1b53a9c1b433968d8bca8817b79d237f3"},
+    {file = "croniter-3.0.3-py2.py3-none-any.whl", hash = "sha256:b3bd11f270dc54ccd1f2397b813436015a86d30ffc5a7a9438eec1ed916f2101"},
+    {file = "croniter-3.0.3.tar.gz", hash = "sha256:34117ec1741f10a7bd0ec3ad7d8f0eb8fa457a2feb9be32e6a2250e158957668"},
 ]
 
 [package.dependencies]
@@ -1602,13 +1606,13 @@ files = [
 
 [[package]]
 name = "jsonschema"
-version = "4.22.0"
+version = "4.23.0"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.22.0-py3-none-any.whl", hash = "sha256:ff4cfd6b1367a40e7bc6411caec72effadd3db0bbe5017de188f2d6108335802"},
-    {file = "jsonschema-4.22.0.tar.gz", hash = "sha256:5b22d434a45935119af990552c862e5d6d564e8f6601206b305a61fdf661a2b7"},
+    {file = "jsonschema-4.23.0-py3-none-any.whl", hash = "sha256:fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566"},
+    {file = "jsonschema-4.23.0.tar.gz", hash = "sha256:d71497fef26351a33265337fa77ffeb82423f3ea21283cd9467bb03999266bc4"},
 ]
 
 [package.dependencies]
@@ -1625,11 +1629,11 @@ rfc3339-validator = {version = "*", optional = true, markers = "extra == \"forma
 rfc3986-validator = {version = ">0.1.0", optional = true, markers = "extra == \"format-nongpl\""}
 rpds-py = ">=0.7.1"
 uri-template = {version = "*", optional = true, markers = "extra == \"format-nongpl\""}
-webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format-nongpl\""}
+webcolors = {version = ">=24.6.0", optional = true, markers = "extra == \"format-nongpl\""}
 
 [package.extras]
 format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
-format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "uri-template", "webcolors (>=1.11)"]
+format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "uri-template", "webcolors (>=24.6.0)"]
 
 [[package]]
 name = "jsonschema-specifications"
@@ -1996,32 +2000,32 @@ files = [
 
 [[package]]
 name = "meltano"
-version = "3.4.2"
+version = "3.5.0"
 description = "Meltano is your CLI for ELT+: Open Source, Flexible, and Scalable. Move, transform, and test your data with confidence using a streamlined data engineering workflow you’ll love."
 optional = false
 python-versions = "<3.13,>=3.8"
 files = [
-    {file = "meltano-3.4.2-py3-none-any.whl", hash = "sha256:e7f4845199d9b27692724423b28942c1e86f9d5482bd1cfb0bce0af7640e60ce"},
-    {file = "meltano-3.4.2.tar.gz", hash = "sha256:c5967411a2f3113abc7e56f1d1154251e00b3f003ded42aeb0e569cce03b99c9"},
+    {file = "meltano-3.5.0-py3-none-any.whl", hash = "sha256:58f3f477b7cded89341f7393bd03a02ebe624337deb1db391945808deae8e38a"},
+    {file = "meltano-3.5.0.tar.gz", hash = "sha256:1238746bab55542352a56b8a98af44e23694b27ba4bf449010c1d802528a16fc"},
 ]
 
 [package.dependencies]
-aiodocker = ">=0.21.0,<0.22.0"
-alembic = ">=1.13.1,<2.0.0"
+aiodocker = ">=0.22.2,<0.23.0"
+alembic = ">=1.13.2,<2.0.0"
 atomicwrites = ">=1.2.1,<2.0.0"
-check-jsonschema = ">=0.28.3,<0.29.0"
+check-jsonschema = ">=0.29.1,<0.30.0"
 click = ">=8.1,<9.0"
 click-default-group = ">=1.2.4,<2.0.0"
 click-didyoumean = ">=0.3.1,<0.4.0"
-croniter = ">=2.0.5,<3.0.0"
+croniter = ">=3.0.3,<4.0.0"
 fasteners = ">=0.19,<0.20"
 flatten-dict = ">=0,<1"
 importlib-resources = ">=6.4.0,<7.0.0"
 jinja2 = ">=3.1.4,<4.0.0"
-jsonschema = ">=4.22,<5.0"
-packaging = ">=24.0,<25.0"
-platformdirs = ">=4.2.1,<5.0.0"
-psutil = ">=5.9.8,<6.0.0"
+jsonschema = ">=4.23,<5.0"
+packaging = ">=24.1,<25.0"
+platformdirs = ">=4.2.2,<5.0.0"
+psutil = ">=6.0.0,<7.0.0"
 pyjwt = ">=2.6.0,<3.0.0"
 python-dateutil = ">=2.9.0,<3.0.0"
 python-dotenv = ">=1.0.1,<2.0.0"
@@ -2029,29 +2033,29 @@ python-slugify = ">=8.0.4,<9.0.0"
 python-ulid = ">=1.1.0,<2.0.0"
 pyyaml = ">=6.0.1,<7.0.0"
 questionary = ">=2.0.1,<3.0.0"
-requests = ">=2.31.0,<3.0.0"
+requests = ">=2.32.3,<3.0.0"
 rich = ">=13.7.1,<14.0.0"
 "ruamel.yaml" = ">=0.18.6,<0.19.0"
-setuptools = {version = ">=69.5.1,<70.0.0", markers = "python_version >= \"3.12\""}
+setuptools = {version = ">=71.1.0,<72.0.0", markers = "python_version >= \"3.12\""}
 smart-open = ">=7.0.4,<8.0.0"
 snowplow-tracker = ">=1.0.2,<2.0.0"
-sqlalchemy = ">=2.0.30,<3.0.0"
-structlog = ">=24.1.0,<25.0.0"
+sqlalchemy = ">=2.0.31,<3.0.0"
+structlog = ">=24.4.0,<25.0.0"
 tabulate = ">=0.9.0,<0.10.0"
-typing-extensions = ">=4.11.0,<5.0.0"
+typing-extensions = ">=4.12.2,<5.0.0"
 tzlocal = ">=5.2,<6.0"
 urllib3 = "<2"
-virtualenv = ">=20.26.1,<21.0.0"
+virtualenv = ">=20.26.3,<21.0.0"
 yaspin = ">=2.3.0,<3.0.0"
 
 [package.extras]
-azure = ["azure-common (>=1.1.28,<2.0.0)", "azure-core (>=1.30.1,<2.0.0)", "azure-identity (>=1.16.0,<2.0.0)", "azure-storage-blob (>=12.20.0,<13.0.0)"]
+azure = ["azure-common (>=1.1.28,<2.0.0)", "azure-core (>=1.30.2,<2.0.0)", "azure-identity (>=1.17.1,<2.0.0)", "azure-storage-blob (>=12.21.0,<13.0.0)"]
 gcs = ["google-cloud-storage (>=1.31.0)"]
 mssql = ["pymssql (>=2.3.0,<3.0.0)"]
-postgres = ["psycopg[binary] (>=3.1.19,<4.0.0)"]
+postgres = ["psycopg[binary] (>=3.2.1,<4.0.0)"]
 psycopg2 = ["psycopg2-binary (>=2.9.9,<3.0.0)"]
-s3 = ["boto3 (>=1.34.103,<2.0.0)"]
-uv = ["uv (>=0.1.24,<0.2)"]
+s3 = ["boto3 (>=1.34.149,<2.0.0)"]
+uv = ["uv (>=0.1.24,<0.3)"]
 
 [[package]]
 name = "mistune"
@@ -2558,27 +2562,28 @@ wcwidth = "*"
 
 [[package]]
 name = "psutil"
-version = "5.9.8"
+version = "6.0.0"
 description = "Cross-platform lib for process and system monitoring in Python."
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
 files = [
-    {file = "psutil-5.9.8-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:26bd09967ae00920df88e0352a91cff1a78f8d69b3ecabbfe733610c0af486c8"},
-    {file = "psutil-5.9.8-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:05806de88103b25903dff19bb6692bd2e714ccf9e668d050d144012055cbca73"},
-    {file = "psutil-5.9.8-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:611052c4bc70432ec770d5d54f64206aa7203a101ec273a0cd82418c86503bb7"},
-    {file = "psutil-5.9.8-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:50187900d73c1381ba1454cf40308c2bf6f34268518b3f36a9b663ca87e65e36"},
-    {file = "psutil-5.9.8-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d"},
-    {file = "psutil-5.9.8-cp27-none-win32.whl", hash = "sha256:36f435891adb138ed3c9e58c6af3e2e6ca9ac2f365efe1f9cfef2794e6c93b4e"},
-    {file = "psutil-5.9.8-cp27-none-win_amd64.whl", hash = "sha256:bd1184ceb3f87651a67b2708d4c3338e9b10c5df903f2e3776b62303b26cb631"},
-    {file = "psutil-5.9.8-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:aee678c8720623dc456fa20659af736241f575d79429a0e5e9cf88ae0605cc81"},
-    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8cb6403ce6d8e047495a701dc7c5bd788add903f8986d523e3e20b98b733e421"},
-    {file = "psutil-5.9.8-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d06016f7f8625a1825ba3732081d77c94589dca78b7a3fc072194851e88461a4"},
-    {file = "psutil-5.9.8-cp36-cp36m-win32.whl", hash = "sha256:7d79560ad97af658a0f6adfef8b834b53f64746d45b403f225b85c5c2c140eee"},
-    {file = "psutil-5.9.8-cp36-cp36m-win_amd64.whl", hash = "sha256:27cc40c3493bb10de1be4b3f07cae4c010ce715290a5be22b98493509c6299e2"},
-    {file = "psutil-5.9.8-cp37-abi3-win32.whl", hash = "sha256:bc56c2a1b0d15aa3eaa5a60c9f3f8e3e565303b465dbf57a1b730e7a2b9844e0"},
-    {file = "psutil-5.9.8-cp37-abi3-win_amd64.whl", hash = "sha256:8db4c1b57507eef143a15a6884ca10f7c73876cdf5d51e713151c1236a0e68cf"},
-    {file = "psutil-5.9.8-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:d16bbddf0693323b8c6123dd804100241da461e41d6e332fb0ba6058f630f8c8"},
-    {file = "psutil-5.9.8.tar.gz", hash = "sha256:6be126e3225486dff286a8fb9a06246a5253f4c7c53b475ea5f5ac934e64194c"},
+    {file = "psutil-6.0.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:a021da3e881cd935e64a3d0a20983bda0bb4cf80e4f74fa9bfcb1bc5785360c6"},
+    {file = "psutil-6.0.0-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:1287c2b95f1c0a364d23bc6f2ea2365a8d4d9b726a3be7294296ff7ba97c17f0"},
+    {file = "psutil-6.0.0-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:a9a3dbfb4de4f18174528d87cc352d1f788b7496991cca33c6996f40c9e3c92c"},
+    {file = "psutil-6.0.0-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:6ec7588fb3ddaec7344a825afe298db83fe01bfaaab39155fa84cf1c0d6b13c3"},
+    {file = "psutil-6.0.0-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:1e7c870afcb7d91fdea2b37c24aeb08f98b6d67257a5cb0a8bc3ac68d0f1a68c"},
+    {file = "psutil-6.0.0-cp27-none-win32.whl", hash = "sha256:02b69001f44cc73c1c5279d02b30a817e339ceb258ad75997325e0e6169d8b35"},
+    {file = "psutil-6.0.0-cp27-none-win_amd64.whl", hash = "sha256:21f1fb635deccd510f69f485b87433460a603919b45e2a324ad65b0cc74f8fb1"},
+    {file = "psutil-6.0.0-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:c588a7e9b1173b6e866756dde596fd4cad94f9399daf99ad8c3258b3cb2b47a0"},
+    {file = "psutil-6.0.0-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6ed2440ada7ef7d0d608f20ad89a04ec47d2d3ab7190896cd62ca5fc4fe08bf0"},
+    {file = "psutil-6.0.0-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5fd9a97c8e94059b0ef54a7d4baf13b405011176c3b6ff257c247cae0d560ecd"},
+    {file = "psutil-6.0.0-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e2e8d0054fc88153ca0544f5c4d554d42e33df2e009c4ff42284ac9ebdef4132"},
+    {file = "psutil-6.0.0-cp36-cp36m-win32.whl", hash = "sha256:fc8c9510cde0146432bbdb433322861ee8c3efbf8589865c8bf8d21cb30c4d14"},
+    {file = "psutil-6.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:34859b8d8f423b86e4385ff3665d3f4d94be3cdf48221fbe476e883514fdb71c"},
+    {file = "psutil-6.0.0-cp37-abi3-win32.whl", hash = "sha256:a495580d6bae27291324fe60cea0b5a7c23fa36a7cd35035a16d93bdcf076b9d"},
+    {file = "psutil-6.0.0-cp37-abi3-win_amd64.whl", hash = "sha256:33ea5e1c975250a720b3a6609c490db40dae5d83a4eb315170c4fe0d8b1f34b3"},
+    {file = "psutil-6.0.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:ffe7fc9b6b36beadc8c322f84e1caff51e8703b88eee1da46d1e3a6ae11b4fd0"},
+    {file = "psutil-6.0.0.tar.gz", hash = "sha256:8faae4f310b6d969fa26ca0545338b21f73c6b15db7c4a8d934a5482faa818f2"},
 ]
 
 [package.extras]
@@ -2753,20 +2758,6 @@ tomli = {version = ">=1", markers = "python_version < \"3.11\""}
 
 [package.extras]
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
-
-[[package]]
-name = "pytest-durations"
-version = "1.2.0"
-description = "Pytest plugin reporting fixtures and test functions execution time."
-optional = false
-python-versions = ">=3.6.2"
-files = [
-    {file = "pytest-durations-1.2.0.tar.gz", hash = "sha256:75793f7c2c393a947de4a92cc205e8dcb3d7fcde492628926cca97eb8e87077d"},
-    {file = "pytest_durations-1.2.0-py3-none-any.whl", hash = "sha256:210c649d989fdf8e864b7f614966ca2c8be5b58a5224d60089a43618c146d7fb"},
-]
-
-[package.dependencies]
-pytest = ">=4.6"
 
 [[package]]
 name = "python-dateutil"
@@ -3493,19 +3484,19 @@ win32 = ["pywin32"]
 
 [[package]]
 name = "setuptools"
-version = "69.5.1"
+version = "71.1.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "setuptools-69.5.1-py3-none-any.whl", hash = "sha256:c636ac361bc47580504644275c9ad802c50415c7522212252c033bd15f301f32"},
-    {file = "setuptools-69.5.1.tar.gz", hash = "sha256:6c1fccdac05a97e598fb0ae3bbed5904ccb317337a51139dcd51453611bbb987"},
+    {file = "setuptools-71.1.0-py3-none-any.whl", hash = "sha256:33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855"},
+    {file = "setuptools-71.1.0.tar.gz", hash = "sha256:032d42ee9fb536e33087fb66cac5f840eb9391ed05637b3f2a76a7c8fb477936"},
 ]
 
 [package.extras]
-docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
-testing = ["build[virtualenv]", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.9)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mypy (==1.9)", "packaging (>=23.2)", "pip (>=19.1)", "pytest (>=6,!=8.1.1)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (>=0.2.1)", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
-testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "packaging (>=23.2)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
+core = ["importlib-metadata (>=6)", "importlib-resources (>=5.10.2)", "jaraco.text (>=3.7)", "more-itertools (>=8.8)", "ordered-set (>=3.1.1)", "packaging (>=24)", "platformdirs (>=2.6.2)", "tomli (>=2.0.1)", "wheel (>=0.43.0)"]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+test = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.14)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "jaraco.test", "mypy (==1.11.*)", "packaging (>=23.2)", "pip (>=19.1)", "pyproject-hooks (!=1.1)", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (<0.4)", "pytest-ruff (>=0.2.1)", "pytest-ruff (>=0.3.2)", "pytest-subprocess", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 
 [[package]]
 name = "simpleeval"
@@ -3652,8 +3643,6 @@ jsonschema = ">=4.16.0"
 packaging = ">=23.1"
 pendulum = ">=2.1.0,<4"
 PyJWT = ">=2.4,<3.0"
-pytest = {version = ">=7.2.1", optional = true, markers = "extra == \"docs\" or extra == \"testing\""}
-pytest-durations = {version = ">=1.2.0", optional = true, markers = "extra == \"testing\""}
 python-dateutil = ">=2.8.2"
 python-dotenv = ">=0.20"
 PyYAML = ">=6.0"
@@ -3853,18 +3842,18 @@ tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "structlog"
-version = "24.2.0"
+version = "24.4.0"
 description = "Structured Logging for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "structlog-24.2.0-py3-none-any.whl", hash = "sha256:983bd49f70725c5e1e3867096c0c09665918936b3db27341b41d294283d7a48a"},
-    {file = "structlog-24.2.0.tar.gz", hash = "sha256:0e3fe74924a6d8857d3f612739efb94c72a7417d7c7c008d12276bca3b5bf13b"},
+    {file = "structlog-24.4.0-py3-none-any.whl", hash = "sha256:597f61e80a91cc0749a9fd2a098ed76715a1c8a01f73e336b746504d1aad7610"},
+    {file = "structlog-24.4.0.tar.gz", hash = "sha256:b27bfecede327a6d2da5fbc96bd859f114ecc398a6389d664f62085ee7ae6fc4"},
 ]
 
 [package.extras]
 dev = ["freezegun (>=0.2.8)", "mypy (>=1.4)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "rich", "simplejson", "twisted"]
-docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "sphinxext-opengraph", "twisted"]
+docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "sphinxext-opengraph", "twisted"]
 tests = ["freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "simplejson"]
 typing = ["mypy (>=1.4)", "rich", "twisted"]
 
@@ -4363,4 +4352,4 @@ s3 = ["fs-s3fs"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "ae04512325ec91ec3a2d69239c2b969038a9b1b4e7011bb0bab5a88b68e44045"
+content-hash = "ef5471b9f64190ddf461bfeff7a0b4b84c720fb9d0bc8fc6675b71f26e85e4bc"
