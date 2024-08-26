@@ -32,11 +32,6 @@ singer-sdk = { version="~=0.38.0", extras = ["faker"] }
 fs-s3fs = { version = "~=1.1.1", optional = true }
 requests = "~=2.32.0"
 ibm-db = "^3.2.3"
-meltano = "^3.4.2"
-
-[tool.poetry.dev-dependencies]
-pytest = ">=7.4.0"
-singer-sdk = { version="~=0.38.0", extras = ["testing"] }
 
 [tool.poetry.extras]
 s3 = ["fs-s3fs"]
@@ -45,6 +40,8 @@ s3 = ["fs-s3fs"]
 jupyterlab = "^4.2.3"
 ruff = ">=0.5.2,<0.7.0"
 psycopg2-binary = "^2.9.9"
+pytest = ">=7.4.0"
+meltano = "^3.4.2"
 
 # 3.5.0 is the latest pre-commit to support python 3.8. The current version only support 3.9+
 # We should plan to drop 3.8 support 1 years after 3.8 stops receiving security updates.
