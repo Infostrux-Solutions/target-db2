@@ -101,7 +101,29 @@ Currently, only username / password (UID / PWD) based authentication is supporte
 
 The username & password can be provided through `meltano.yml` or the `target-db2`'s config.json. The user must have the following permissions in order to be able to load data into Db2.
 
-* TODO: figure out the minimal permissions requied by meltano to load data to Db2.
+## Minimal Permissions Required on DB2
+
+This library will perform the following actions on DB2.
+
+* CREATE TABLE
+* DROP TABLE
+* ALTER TABLE ADD COLUMN
+* ALTER TABLE ALTER COLUMN
+* INSERT INTO TABLE
+* MERGE INTO TABLE USING
+* [OPTIONALLY] CREATE SCHEMA
+
+_NOTE: `CREATE SCHEMA` is used to create a new schema where data will be loaded. If the stated target_schema, specified via `default_target_schema` exists, this library will not issue a `CREATE SCHEMA` command_
+
+## Known Limitations & Issues
+
+### Complex Data Structures (arrays & maps)
+
+Complex values such as `dict` or `list` will be json encoded and stored as `VARCHAR`. The `VARCHAR` column has a default size of 10000, and it is user configurable via the setting `varchar_size`.
+
+IBM Db2 allows VARCHAR columns up to 32704 bytes.
+
+This target currently does not write to CLOB fields, PRs welcome!
 
 ## Usage
 
@@ -187,28 +209,3 @@ docker compose down
 
 See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the Meltano Singer SDK to
 develop your own Singer taps and targets.
-
-
-## Minimal Permissions Required on DB2
-
-This library will perform the following actions on DB2.
-
-* CREATE TABLE
-* DROP TABLE
-* ALTER TABLE ADD COLUMN
-* ALTER TABLE ALTER COLUMN
-* INSERT INTO TABLE
-* MERGE INTO TABLE USING
-* [OPTIONALLY] CREATE SCHEMA
-
-_NOTE: `CREATE SCHEMA` is used to create a new schema where data will be loaded. If the stated target_schema, specified via `default_target_schema` exists, this library will not issue a `CREATE SCHEMA` command_
-
-## Known Limitations & Issues
-
-# Complex Data Structures (arrays & maps)
-
-Complex values such as `dict` or `list` will be json encoded and stored as `VARCHAR`. The `VARCHAR` column has a default size of 10000, and it is user configurable via the setting `varchar_size`.
-
-IBM Db2 allows VARCHAR columns up to 32704 bytes.
-
-This target currently does not write to CLOB fields, PRs welcome!
