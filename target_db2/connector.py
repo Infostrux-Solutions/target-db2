@@ -87,39 +87,6 @@ class DB2Connector(SQLConnector):
         with self._engine.connect() as conn, conn.begin():
             conn.execute(sa.schema.CreateSchema(schema_name))
 
-    def get_column_add_ddl(
-        self,
-        table_name: str,
-        column_name: str,
-        column_type: sa.types.TypeEngine,
-    ) -> sa.DDL:
-        """Get the create column DDL statement.
-
-        Override this if your database uses a different syntax for creating columns.
-
-        Args:
-            table_name: Fully qualified table name of column to alter.
-            column_name: Column name to create.
-            column_type: New column sqlalchemy type.
-
-        Returns:
-            A sqlalchemy DDL instance.
-        """
-        create_column_clause = sa.schema.CreateColumn(
-            sa.Column(
-                column_name,
-                column_type,
-            ),
-        )
-        compiled = create_column_clause.compile(self._engine).string
-        return sa.DDL(
-            "ALTER TABLE %(table_name)s ADD COLUMN %(create_column_clause)s",
-            {  # type: ignore[arg-type]
-                "table_name": table_name,
-                "create_column_clause": compiled,
-            },
-        )
-
     def _adapt_column_type(
         self,
         full_table_name: str,
@@ -473,10 +440,9 @@ class Db2Sink(SQLSink):
     ) -> Executable:
         """Issue a MERGE statement to upsert data to the final table.
 
-        I.E, if the final table & load tables have 3 colummns: col1, col2 & col3
-        where col1 is the join key,
-
-        Then this method will issue the following MERGE query.
+        Given the final table & load tables have 3 colummns: col1, col2 & col3
+        where col1 is the join key, then this method will issue the following
+        `MERGE` query:
 
             ```
             MERGE INTO final_tbl ft
