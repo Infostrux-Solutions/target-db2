@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "target-db2"
-version = "0.1.2"
+version = "0.1.3"
 description = "`target-db2` is a Singer target for db2, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Haleemur Ali <haleemur@infostrux.com>"]
