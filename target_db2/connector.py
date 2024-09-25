@@ -87,6 +87,32 @@ class DB2Connector(SQLConnector):
         with self._engine.connect() as conn, conn.begin():
             conn.execute(sa.schema.CreateSchema(schema_name))
 
+    @staticmethod
+    def get_column_alter_ddl(
+        table_name: str,
+        column_name: str,
+        column_type: sa.types.TypeEngine,
+    ) -> sa.DDL:
+        """Get the alter column DDL statement.
+
+        Args:
+            table_name: Fully qualified table name of column to alter.
+            column_name: Column name to alter.
+            column_type: New column type string.
+
+        Returns:
+            A sqlalchemy DDL instance.
+        """
+        return sa.DDL(
+            "ALTER TABLE %(table_name)s ALTER COLUMN %(column_name)s "
+            "SET DATA TYPE %(column_type)s",
+            {  # type: ignore[arg-type]
+                "table_name": table_name,
+                "column_name": column_name,
+                "column_type": column_type,
+            },
+        )
+
     def _adapt_column_type(
         self,
         full_table_name: str,
@@ -142,7 +168,7 @@ class DB2Connector(SQLConnector):
             column_name=self.quote(column_name),
             column_type=compatible_sql_type,
         )
-        with self._connect() as conn:
+        with self._engine.connect() as conn, conn.begin():
             conn.execute(alter_column_ddl)
 
     def _create_empty_column(

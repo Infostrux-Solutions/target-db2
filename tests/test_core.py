@@ -11,6 +11,7 @@ from sqlalchemy import (
     Column,
     Integer,
     MetaData,
+    String,
     Table,
     create_engine,
     insert,
@@ -133,3 +134,35 @@ def test_get_column_add_ddl() -> None:
     connector.execute_queries(
         [text("drop table if exists test_alter_table_add_column")]
     )
+
+
+def test_alter_column() -> None:
+    """Test alter varchar column size from 10 to 20."""
+    connector = Connector()
+    connector.create_empty_table(
+        "test_alter_column",
+        {
+            "properties": {
+                "_id": {"type": ["integer"]},
+                "email": {"type": ["string"], "maxLength": 10},
+            }
+        },
+        primary_keys=["_id"],
+    )
+    connector._adapt_column_type(  # noqa: SLF001
+        "test_alter_column", "email", String(20)
+    )
+    with connector._engine.connect() as conn, conn.begin():  # noqa: SLF001
+        resp = conn.execute(
+            text("""
+            SELECT typename, length
+            FROM syscat.columns
+            WHERE tabname = 'TEST_ALTER_COLUMN'
+            AND tabschema = 'DB2INST1'
+            and colname = 'EMAIL'
+        """)
+        )
+        _type = resp.fetchone()
+        assert _type[0] == "VARCHAR"
+        assert _type[1] == 20
+        conn.execute(text("drop table test_alter_column"))
