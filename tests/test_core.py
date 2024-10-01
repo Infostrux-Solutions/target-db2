@@ -6,7 +6,10 @@ import os
 import typing as t
 
 import pytest
+from singer_sdk.helpers._compat import importlib_resources
 from singer_sdk.testing import get_target_test_class
+from singer_sdk.testing.suites import TestSuite
+from singer_sdk.testing.templates import TargetFileTestTemplate
 from sqlalchemy import (
     Column,
     Integer,
@@ -22,8 +25,10 @@ from sqlalchemy.schema import DropTable
 
 from target_db2.connector import JSONVARCHAR, DB2Connector
 from target_db2.target import TargetDb2
+from tests import testdata
 
 if t.TYPE_CHECKING:
+    from singer_sdk.helpers._compat import Traversable
     from sqlalchemy.engine.base import Engine
 
 
@@ -90,10 +95,40 @@ def test_column_objectvarchar(db2: Engine) -> None:
         conn.execute(DropTable(test_table))  # type: ignore[arg-type]
 
 
-# Run standard built-in target tests from the SDK:
+class TargetFileTestTemplateCustomPath(TargetFileTestTemplate):
+    """Template uses singer messages in testdata folder to generate tests."""
+
+    @property
+    def singer_filepath(self) -> Traversable:
+        """Get path to singer JSONL formatted messages file.
+
+        Files will be sourced from `./target_test_streams/<test name>.singer`.
+
+        Returns:
+            The expected Path to this tests singer file.
+        """
+        return importlib_resources.files(testdata) / f"{self.name}.singer"
+
+
+class TargetSchemaChangeToNumericMultipleOf(TargetFileTestTemplateCustomPath):
+    """Test Target handles array data."""
+
+    name = "schema_change_to_numeric_multipleof"
+
+
+class TargetSchemaHasNumericMultipleOf(TargetFileTestTemplateCustomPath):
+    """Test Target handles array data."""
+
+    name = "schema_has_numeric_multipleof"
+
+
+custom_tests = TestSuite(
+    kind="target",
+    tests=[TargetSchemaChangeToNumericMultipleOf, TargetSchemaHasNumericMultipleOf],
+)
+
 StandardTargetTests = get_target_test_class(
-    target_class=TargetDb2,
-    config=SAMPLE_CONFIG,
+    target_class=TargetDb2, config=SAMPLE_CONFIG, custom_suites=[custom_tests]
 )
 
 
