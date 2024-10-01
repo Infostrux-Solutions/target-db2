@@ -1,0 +1,1 @@
+{"type":"SCHEMA","stream":"test_schema_has_numeric_multipleof","schema":{"properties":{"id":{"type":["number"]},"val1":{"type":["number","null"]},"created_at":{"format":"date-time","type":["string","null"]},"amount":{"multipleOf":0.01,"type":["number","null"]}},"type":"object","required":["id"]},"key_properties":["id"],"bookmark_properties":["created_at"]}

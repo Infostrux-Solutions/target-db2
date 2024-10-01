@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import typing as t
 from random import choice
@@ -26,6 +27,7 @@ from target_db2.ibm_db_sa import VARCHAR
 
 MAX_VARCHAR_SIZE = 10000
 MAX_PK_STRING_SIZE = 1022
+MAX_DECIMAL_PRECISION = 31
 
 sa.dialects.registry.register("ibm_db_sa", "target_db2.ibm_db_sa", "dialect")
 
@@ -278,9 +280,86 @@ class DB2Connector(SQLConnector):
                 jsonschema_type["maxLength"] = string_length
         is_obj = _jsonschema_type_check(jsonschema_type, ("object",))
         is_arr = _jsonschema_type_check(jsonschema_type, ("array",))
+        if _jsonschema_type_check(jsonschema_type, ("number",)):
+            multiple_of = jsonschema_type.get("multipleOf")
+            if multiple_of and multiple_of != int(multiple_of):
+                _multiple_of = multiple_of - int(multiple_of)
+                scale = int(math.ceil(math.log10(1 / _multiple_of)))
+                precision = MAX_DECIMAL_PRECISION - scale
+                return sa.types.DECIMAL(precision, scale)
+            return sa.types.DECIMAL()
+
         if is_obj or is_arr:
             return JSONVARCHAR(varchar_size)
         return super(DB2Connector, DB2Connector).to_sql_type(jsonschema_type)
+
+    def merge_sql_types(
+        self,
+        sql_types: t.Sequence[sa.types.TypeEngine],
+    ) -> sa.types.TypeEngine:
+        """Return a compatible SQL type for the selected type list.
+
+        Args:
+            sql_types: List of SQL types.
+
+        Returns:
+            A SQL type that is compatible with the input types.
+
+        Raises:
+            ValueError: If sql_types argument has zero members.
+        """
+        if not sql_types:
+            msg = "Expected at least one member in `sql_types` argument."
+            raise ValueError(msg)
+
+        if len(sql_types) == 1:
+            return sql_types[0]
+
+        # Gathering Type to match variables
+        # sent in _adapt_column_type
+        current_type = sql_types[0]
+        cur_len: int = getattr(current_type, "length", 0)
+
+        # Convert the two types given into a sorted list
+        # containing the best conversion classes
+        sql_types = self._sort_types(sql_types)
+
+        # If greater than two evaluate the first pair then on down the line
+        if len(sql_types) > 2:  # noqa: PLR2004
+            return self.merge_sql_types(
+                [self.merge_sql_types([sql_types[0], sql_types[1]]), *sql_types[2:]],
+            )
+
+        # if all types are DECIMAL, put the one with the biggest scale at the top
+        # this will ensure that it gets picked as the merged type.
+        if all(isinstance(opt, sa.types.DECIMAL) for opt in sql_types):
+            sql_types = sorted(sql_types, reverse=True, key=lambda x: x.scale or 0)  # type: ignore[attr-defined]
+            return sql_types[0]
+        # Get the generic type class
+        for opt in sql_types:
+            # Get the length
+            opt_len: int = getattr(opt, "length", 0)
+            generic_type = type(opt.as_generic())  # type: ignore[attr-defined]
+
+            if isinstance(generic_type, type):
+                if issubclass(
+                    generic_type,
+                    (sa.types.String, sa.types.Unicode),
+                ):
+                    # If length None or 0 then is varchar max ?
+                    if (
+                        (opt_len is None)
+                        or (opt_len == 0)
+                        or (cur_len and (opt_len >= cur_len))
+                    ):
+                        return opt
+                # If best conversion class is equal to current type
+                # return the best conversion class
+                elif str(opt) == str(current_type):
+                    return opt
+
+        msg = f"Unable to merge sql types: {', '.join([str(t) for t in sql_types])}"
+        raise ValueError(msg)
 
     def create_empty_table(  # noqa: PLR0913
         self,
