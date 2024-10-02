@@ -1,2 +1,6 @@
 {"type":"SCHEMA","stream":"test_schema_change_numeric_mulipleof","schema":{"properties":{"id":{"type":["integer"]},"val1":{"type":["number","null"]}},"type":"object","required":["id"]},"key_properties":["id"]}
+{"type": "RECORD","stream":"test_schema_change_numeric_mulipleof","record": {"id":1,"val1":10.00}}
+{"type": "RECORD","stream":"test_schema_change_numeric_mulipleof","record": {"id":2,"val1":20.00}}
+{"type": "RECORD","stream":"test_schema_change_numeric_mulipleof","record": {"id":3,"val1":30.00}}
 {"type":"SCHEMA","stream":"test_schema_change_numeric_mulipleof","schema":{"properties":{"id":{"type":["integer"]},"val1":{"type":["number","null"], "multipleOf": 0.01}},"type":"object","required":["id"]},"key_properties":["id"]}
+{"type": "RECORD","stream":"test_schema_change_numeric_mulipleof","record": {"id":1,"val1":10.25}}

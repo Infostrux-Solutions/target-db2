@@ -8,9 +8,10 @@ import typing as t
 import pytest
 from singer_sdk.helpers._compat import importlib_resources
 from singer_sdk.testing import get_target_test_class
-from singer_sdk.testing.suites import TestSuite
+from singer_sdk.testing.suites import TestSuite as TS  # noqa: N817
 from singer_sdk.testing.templates import TargetFileTestTemplate
 from sqlalchemy import (
+    DECIMAL,
     Column,
     Integer,
     MetaData,
@@ -122,7 +123,7 @@ class TargetSchemaHasNumericMultipleOf(TargetFileTestTemplateCustomPath):
     name = "schema_has_numeric_multipleof"
 
 
-custom_tests = TestSuite(
+custom_tests = TS(
     kind="target",
     tests=[TargetSchemaChangeToNumericMultipleOf, TargetSchemaHasNumericMultipleOf],
 )
@@ -180,6 +181,7 @@ def test_alter_column() -> None:
             "properties": {
                 "_id": {"type": ["integer"]},
                 "email": {"type": ["string"], "maxLength": 10},
+                "val": {"type": ["number"], "multipleOf": 0.1},
             }
         },
         primary_keys=["_id"],
@@ -187,17 +189,23 @@ def test_alter_column() -> None:
     connector._adapt_column_type(  # noqa: SLF001
         "test_alter_column", "email", String(20)
     )
+    connector._adapt_column_type(  # noqa: SLF001
+        "test_alter_column", "val", DECIMAL(10, 3)
+    )
     with connector._engine.connect() as conn, conn.begin():  # noqa: SLF001
         resp = conn.execute(
             text("""
-            SELECT typename, length
+            SELECT colname, typename, length, scale
             FROM syscat.columns
             WHERE tabname = 'TEST_ALTER_COLUMN'
             AND tabschema = 'DB2INST1'
-            and colname = 'EMAIL'
+            and colname IN ('EMAIL', 'VAL')
         """)
         )
-        _type = resp.fetchone()
-        assert _type[0] == "VARCHAR"
-        assert _type[1] == 20
+        _types = resp.fetchall()
+        for _type in _types:
+            if _type[0] == "EMAIL":
+                assert _type[1:3] == ("VARCHAR", 20)
+            if _type[0] == "VAL":
+                assert _type[1:4] == ("DECIMAL", 10, 3)
         conn.execute(text("drop table test_alter_column"))

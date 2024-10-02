@@ -170,8 +170,30 @@ class DB2Connector(SQLConnector):
             column_name=self.quote(column_name),
             column_type=compatible_sql_type,
         )
+        table_name_split = full_table_name.split(".", 1)
+        table_name = table_name_split[-1]
+        schema_clause = (
+            f"AND tabschema = '{table_name_split[0]}'"
+            if len(table_name_split) == 2  # noqa: PLR2004
+            else ""
+        )
+        check_reorg_stmt = sa.text(
+            f"SELECT true FROM SYSIBMADM.ADMINTABINFO WHERE REORG_PENDING "
+            f"{schema_clause} AND lower(tabname) = '{table_name}';"
+        )
+        reorg_table_stmt = sa.text(
+            f"CALL SYSPROC.ADMIN_CMD ('REORG TABLE { self.quote(full_table_name) }')"
+        )
+
         with self._engine.connect() as conn, conn.begin():
             conn.execute(alter_column_ddl)
+            _msg = f"Executed: {alter_column_ddl}"
+            self.logger.info(_msg)
+            resp = conn.execute(check_reorg_stmt).scalar()
+            if resp:
+                conn.execute(reorg_table_stmt)
+                _msg = f"Executed: {reorg_table_stmt}"
+                self.logger.info(_msg)
 
     def _create_empty_column(
         self,
@@ -584,7 +606,7 @@ class Db2Sink(SQLSink):
             WHEN NOT MATCHED THEN
               INSERT ({', '.join(final_columns)})
               VALUES ({', '.join(load_columns)});
-            """).strip()  # noqa: S608
+            """).strip()
 
         return sa.text(merge_query)
 
@@ -639,7 +661,7 @@ class Db2Sink(SQLSink):
             INSERT INTO {self.connector.quote(full_table_name)}
             ({", ".join(column_identifiers)})
             VALUES ({", ".join([f":{name}" for name in property_names])})
-            """,  # noqa: S608
+            """,
         )
         return statement.rstrip()
 
